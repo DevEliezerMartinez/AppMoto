@@ -57,10 +57,7 @@ export default function RegisterService({ onSubmit, onClose }) {
   const [values, setValues] = useState([]);
 
   const handleSubmit = async () => {
-    console.log("Envio de formulario detalles:", detalles);
-    console.log("Envio de formulario Costo:", Costo);
-    console.log("Envio de formulario date:", date);
-    console.log("Envio de formulario array:", values);
+    
 
     let Registrar = "Registrar"
     try {

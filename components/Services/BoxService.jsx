@@ -13,9 +13,13 @@ import {
 } from "@gluestack-ui/themed";
 import { Pressable } from "react-native";
 
-const ComponentCard = ({ data }) => {
+const ComponentCard = ({ data, index }) => {
   const [showModal, setShowModal] = useState(false);
-  console.log(typeof(data));
+
+  let liston = data.piezas || [];
+  liston = data.piezas ? data.piezas.split(",") : [];
+
+  /*  console.log(".-", liston); */
 
   const PressIn = () => {
     setShowModal(true);
@@ -38,12 +42,13 @@ const ComponentCard = ({ data }) => {
             fontFamily: "MontserratSemibold",
           }}
         >
-          Servicio #1
+          Servicio #{index + 1}
         </Text>
 
         <Box
           sx={{
-            backgroundColor: "#0ADD12",
+            backgroundColor:
+              data.status === "Registrar" ? "#0ADD12" : "#007BFF",
             width: 125,
             padding: 3,
             right: -200,
@@ -59,7 +64,7 @@ const ComponentCard = ({ data }) => {
               textAlign: "center",
             }}
           >
-            {data.status}
+            {data.status === "Registrar" ? "Hecho" : "Próximo"}
           </Text>
         </Box>
 
@@ -78,7 +83,9 @@ const ComponentCard = ({ data }) => {
               color: "#979292",
             }}
           >
-            {data.notas}
+            {data.notas && data.notas.length > 18
+              ? `${data.notas.slice(0, 18)}...`
+              : data.notas}
           </Text>
 
           <Text
@@ -112,7 +119,7 @@ const ComponentCard = ({ data }) => {
                 fontSize: 20,
               }}
             >
-              Servicio #1
+              Servicio #{index + 1}
             </Text>
           </ModalHeader>
           <ModalBody>
@@ -123,25 +130,24 @@ const ComponentCard = ({ data }) => {
                 fontSize: 16,
               }}
             >
-              {" "}
-              30/05/2023
+              {data.fecha}
             </Text>
 
             <Divider sx={{ marginVertical: 10 }} />
 
             <Box id="lista">
-              {[{ key: "Faros" }, { key: "aceite" }, { key: "Cadena" }].map(
-                (item, index) => (
-                  <Text
-                    key={index}
-                    style={{
-                      fontSize: 14,
-                      fontFamily: "MontserratSemibold",
-                      color: "#979292",
-                    }}
-                  >{`\u2022 ${item.key}`}</Text>
-                )
-              )}
+              {liston.map((item, index) => (
+                <Text
+                  key={index}
+                  style={{
+                    fontSize: 14,
+                    fontFamily: "MontserratSemibold",
+                    color: "#979292",
+                  }}
+                >
+                  {`\u2022 ${item.replace(/[^a-zA-Z0-9]/g, "")}`}{" "}
+                </Text>
+              ))}
             </Box>
 
             <Text
@@ -151,7 +157,7 @@ const ComponentCard = ({ data }) => {
                 fontFamily: "MontserratSemibold",
               }}
             >
-              Total:$720
+              Total:{data.costo !== null ? `$${data.costo}` : " "}
             </Text>
             <Text
               style={{
@@ -160,8 +166,7 @@ const ComponentCard = ({ data }) => {
                 fontFamily: "MontserratRegular",
               }}
             >
-              En este servicio cambie mis frenos porque se cristalizaban y aún
-              no descubro el porque de las explociones
+              {data.notas}
             </Text>
           </ModalBody>
         </ModalContent>

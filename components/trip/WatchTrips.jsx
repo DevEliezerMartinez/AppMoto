@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   ScrollView,
-  Image,
   Spinner,
   Fab,
   FabIcon,
@@ -143,6 +142,7 @@ const WatchTrips = () => {
           }));
 
           setResultados(formattedData);
+          console.log("\n .-",formattedData.fotografia)
           // Calcular la sumatoria de km_viaje
           const total = formattedData.reduce(
             (accumulatedTotal, currentItem) =>
@@ -207,6 +207,7 @@ const WatchTrips = () => {
               }}
             >
               <Image
+                
                 source={{ uri: item.fotografia }}
                 alt="imagen-destino"
                 role="img"

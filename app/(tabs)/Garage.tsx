@@ -1,82 +1,85 @@
-import { Image, StyleSheet } from "react-native";
-import { View } from "../../components/Themed";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { Text, View } from "../../components/Themed";
+import { useContext, useState } from "react";
 import {
+  AddIcon,
   Avatar,
+  Box,
   Button,
+  ButtonIcon,
   ButtonText,
+  Center,
+  Divider,
   HStack,
-  Spinner,
+  Heading,
+  Input,
+  InputField,
   VStack,
 } from "@gluestack-ui/themed";
-import { commonStyles } from "../../assets/commonStyles"; // Asegúrate de que la ruta sea correcta
-import { loadFonts } from "../../assets/fonts/Fonts"; // Importa la función de carga de fuentes
-import { useEffect, useState } from "react";
-import { Text } from "@gluestack-ui/themed";
-import * as ImagePicker from "expo-image-picker";
 import { useDispatch, useSelector } from "react-redux";
+import Header from "../../components/trip/Header";
+export default function Garage() {
+  const [marca, setMarca] = useState('');
+  const [modelo, setModelo] = useState('');
+  const [ano, setAno] = useState('');
 
-export default function Trip() {
-  const [image, setImage] = useState("");
-  const miDato = useSelector((state: { miDato: number }) => state.miDato);
-
-  const handleIncrementar = () => {
-   
+  const sendProfile = () => {
+    console.log('Marca:', marca);
+    console.log('Modelo:', modelo);
+    console.log('Año:', ano);
+    // Aquí puedes realizar otras acciones con los valores, como enviarlos a través de una API
   };
-
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    console.log("funcion");
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    /* console.log("---",result.assets);
-     */
-
-    if (!result.canceled) {
-      console.log("resultado", result.assets[0].uri);
-
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  useEffect(() => {
-    // Carga las fuentes al inicio del componente
-    loadFonts();
-  }, []); // Asegúrate de ejecutarlo solo una vez al montar el componente
 
   return (
-    <View style={commonStyles.container}>
-      <View
-        style={commonStyles.container}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+    <View style={{ flex: 1, alignItems: "center", paddingTop: 30 }}>
+      <Center sx={{ height: 580, width: 370 }}>
+        <Text>Registro de motocicletas</Text>
+        <Divider />
 
-      <VStack space="2xl">
-        <HStack space="md">
-          <Avatar bgColor="$indigo600"></Avatar>
+        <Text>Agregar motocicleta:</Text>
 
-          <View>
-            <Text>Valor actual: {miDato}</Text>
-            <Button  onPress={handleIncrementar} ><ButtonText>Incrementar</ButtonText></Button>
-          </View>
-
-          <Button onPress={pickImage}>
-            <ButtonText>seleccionar imagen</ButtonText>
-          </Button>
-
-          {image && (
-            <Image
-              source={{ uri: image }}
-              style={{ width: 200, height: 200 }}
+        <Box>
+          <Input variant="underlined" size="lg">
+            <InputField
+              placeholder="Marca"
+              value={marca}
+              onChangeText={(text) => setMarca(text)}
+              sx={{color: "$white"}}
             />
-          )}
-        </HStack>
-      </VStack>
+          </Input>
+          <Input variant="underlined" size="lg">
+            <InputField
+              placeholder="Modelo"
+              value={modelo}
+              onChangeText={(text) => setModelo(text)}
+              sx={{color: "$white"}}
+
+            />
+          </Input>
+          <Input variant="underlined" size="lg">
+            <InputField
+              placeholder="Año"
+              keyboardType="numeric"
+              value={ano}
+              onChangeText={(text) => setAno(text)}
+              sx={{color: "$white"}}
+
+            />
+          </Input>
+
+          <Button
+            size="md"
+            variant="outline"
+            action="secondary"
+            onPress={sendProfile}
+          >
+            <ButtonText>Guardar </ButtonText>
+            <ButtonIcon as={AddIcon} />
+          </Button>
+        </Box>
+      </Center>
     </View>
   );
 }

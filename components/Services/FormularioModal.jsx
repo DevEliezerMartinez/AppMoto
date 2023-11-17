@@ -62,7 +62,7 @@ export default function ModalForm({ status, onClose }) {
                 fontSize: 16,
               }}
             >
-              Registro de servicios #1
+              Registro de servicios 
             </Text>
           </ModalHeader>
 

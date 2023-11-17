@@ -50,6 +50,7 @@ useEffect(() => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    mostrar();
   };
 
   let datos = [
@@ -160,8 +161,8 @@ useEffect(() => {
 
 const ContainerScroll = ({ info }) => (
   <ScrollView sx={{marginTop: 10, height: 230}}>
-    {info.map((item) => (
-      <BoxService key={item.id_servicio} data={item} />
+    {info.map((item, index) => (
+      <BoxService key={item.id_servicio} data={item} index={index} />
     
     ))}
   </ScrollView>
