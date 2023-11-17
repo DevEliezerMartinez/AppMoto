@@ -15,7 +15,7 @@ import { Pressable } from "react-native";
 
 const ComponentCard = ({ data }) => {
   const [showModal, setShowModal] = useState(false);
- /*  console.log(showModal); */
+  console.log(typeof(data));
 
   const PressIn = () => {
     setShowModal(true);
@@ -38,7 +38,7 @@ const ComponentCard = ({ data }) => {
             fontFamily: "MontserratSemibold",
           }}
         >
-          Servicio #{data.id}
+          Servicio #1
         </Text>
 
         <Box
@@ -78,7 +78,7 @@ const ComponentCard = ({ data }) => {
               color: "#979292",
             }}
           >
-            {data.descripcion}
+            {data.notas}
           </Text>
 
           <Text

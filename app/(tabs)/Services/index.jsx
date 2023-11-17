@@ -13,20 +13,35 @@ import {
 } from "@gluestack-ui/themed";
 import Header from "../../../components/Services/Header";
 import BoxService from "../../../components/Services/BoxService";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../../components/Services/FormularioModal";
 import { useSelector } from 'react-redux';
 import { useDispatch } from "react-redux";
 import { update } from "../../../src/sliceServices"; // Ajusta la ruta a tu archivo miSlice
+import { supabase } from "../../../lib/supabase";
 
 
 export default function TabTwoScreen() {
   const [Vacio, setSetVacio] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+  const [dbDatos, setdbDatos] =  useState([]);
+  
+  
 
   const counterValue = useSelector((state) => state.listServices.counter);
 
+const mostrar =   async()=> {
+  let { data: servicios, error } = await supabase
+  .from('servicios')
+  .select('costo,fecha,notas,piezas,status,id_servicio')
 
+  setdbDatos(servicios)
+}
+ 
+useEffect(() => {
+  mostrar()
+ 
+}, []);
 
   
   const handleOpenModal = () => {
@@ -37,7 +52,7 @@ export default function TabTwoScreen() {
     setOpenModal(false);
   };
 
-  let data = [
+  let datos = [
     {
       id: 1,
       status: "Hecho",
@@ -113,7 +128,7 @@ export default function TabTwoScreen() {
           Historial de servicioos
         </Text>
         
-        {!counterValue ? <ContainerVacio /> : <ContainerScroll data={data} />}
+        {!counterValue ? <ContainerVacio /> : <ContainerScroll info={dbDatos} />}
 
         <Modal status={openModal} onClose={handleCloseModal} />
 
@@ -143,10 +158,11 @@ export default function TabTwoScreen() {
   );
 }
 
-const ContainerScroll = ({ data }) => (
+const ContainerScroll = ({ info }) => (
   <ScrollView sx={{marginTop: 10, height: 230}}>
-    {data.map((item) => (
-      <BoxService key={item.id} data={item} />
+    {info.map((item) => (
+      <BoxService key={item.id_servicio} data={item} />
+    
     ))}
   </ScrollView>
 );

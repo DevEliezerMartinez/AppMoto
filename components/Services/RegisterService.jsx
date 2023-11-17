@@ -18,6 +18,7 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { supabase } from "../../lib/supabase";
 
 export default function RegisterService({ onSubmit, onClose }) {
   // states for datepicker
@@ -55,11 +56,32 @@ export default function RegisterService({ onSubmit, onClose }) {
 
   const [values, setValues] = useState([]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Envio de formulario detalles:", detalles);
     console.log("Envio de formulario Costo:", Costo);
     console.log("Envio de formulario date:", date);
     console.log("Envio de formulario array:", values);
+
+    let Registrar = "Registrar"
+    try {
+      
+
+      onSubmit();
+      onClose();
+
+      const { error } = await supabase
+        .from("servicios")
+        .insert([
+          { fecha: date, status: Registrar, notas: detalles, piezas: values, costo:   Costo },
+        ])
+
+      if (error) {
+        console.log("true");
+        console.log(error);
+      }
+    } catch (error) {
+      console.error("Error general:", error.message);
+    }
 
 
     

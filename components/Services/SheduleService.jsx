@@ -9,8 +9,9 @@ import {
   TextareaInput,
 } from "@gluestack-ui/themed";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { supabase } from "../../lib/supabase";
 
-export default function SheduleService({ onSubmit, onClose } ) {
+export default function SheduleService({ onSubmit, onClose }) {
 
 
   // states for datepicker
@@ -45,16 +46,47 @@ export default function SheduleService({ onSubmit, onClose } ) {
   //state inputs
   const [detalles, setDetalles] = useState("");
 
-  const handleSubmit = () => {
-    const status = "Agendar"
-    console.log("status:" ,status," fecha", date, " detalles ", detalles);
-    onSubmit()
-    onClose()
-   
+  const handleSubmit = async () => {
+    let agendar = "Agendar"
+    try {
+      // Insertar datos en la tabla 'TuTabla' de Supabase
+      /* const { data, error } = await supabase
+         .from('servicios')
+         .insert([{ estado: agendar, fecha: date, notas: detalles }]);
+ 
+       if (error) {
+         console.error("Error al enviar datos a Supabase:", error.message);
+       } else {
+         console.log("Datos enviados con éxito:", data);
+       }
+ 
+       // Llamadas a las funciones onSubmit y onClose después de enviar datos a Supabase
+       onSubmit();
+       onClose();
+       */
+
+      onSubmit();
+      onClose();
+
+      const { error } = await supabase
+        .from("servicios")
+        .insert([
+          { fecha: date, status: agendar, notas: detalles },
+        ])
+
+      if (error) {
+        console.log("true");
+        console.log(error);
+      }
+    } catch (error) {
+      console.error("Error general:", error.message);
+    }
   };
+
+
   return (
     <Center>
-      
+
       <Box
         id="fecha"
         sx={{
