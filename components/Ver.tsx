@@ -5,7 +5,7 @@ export default function Ver() {
   return (
     <View>
 
-      <Text>holaaaaaa</Text>
+      <Text>holaaaaaafgcfgfcfg</Text>
       <Text>Ver</Text>
     </View>
   )
