@@ -36,8 +36,6 @@ import {
   AvatarImage,
 } from "@gluestack-ui/themed";
 
-import { AddIcon } from "@gluestack-ui/themed";
-import { supabase } from "../../lib/supabase";
 
 export default function listProfile({ data }) {
   const seleccinarPerfil = () => {

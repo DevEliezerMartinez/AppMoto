@@ -6,44 +6,49 @@ import Modal from "../../components/Profile/ModalProfile";
 
 import { supabase } from "../../lib/supabase";
 import ListProvider from "../../components/Profile/ListProfile";
-
+let datosPerfiles = [
+  {
+    marca: "Italika",
+    modelo: "125z",
+    image: "../../assets/images/150z.png",
+    año: "2020",
+  },
+  {
+    marca: "Italika",
+    modelo: "150z",
+    image: "../../assets/images/150z.png",
+    año: "2020",
+  },
+  {
+    marca: "Italika",
+    modelo: "200z",
+    image: "../../assets/images/150z.png",
+    año: "2020",
+  },
+];
 
 export default function Garage() {
   //state para mostrar perfiles o vacio
-  const [mostrar, setmostrar] = useState(false);
+  const [mostrar, setmostrar] = useState(true);
   console.log(mostrar);
 
   const [openModal, setOpenModal] = useState(false);
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    /*   mostrar(); */
+  /*   mostrar(); */
   };
   const handleOpenModal = () => {
     setOpenModal(true);
-    /*   mostrar(); */
+  /*   mostrar(); */
   };
 
-  const [datosPerfiles, setdatosPerfiles] = useState([])
-
-
   useEffect(() => {
-    const captureData = async () => {
-      let { data: perfiles, error } = await supabase
-        .from("perfiles")
-        .select("id,marca,modelo,año, imagen");
-
-
-        console.log(perfiles)
-        setdatosPerfiles(perfiles)
-    };
-
-
-    captureData()
-
-   
-   
-  }, []);
+    
+  
+    
+  }, [])
+  
 
   return (
     <View style={{ flex: 1, alignItems: "center", paddingTop: 0 }}>
@@ -58,7 +63,7 @@ export default function Garage() {
           Garage de motocicletaas
         </Text>
 
-        {mostrar ? <ContainerVacio /> : <ShowProfiles datosPerfiles={datosPerfiles}  />}
+        {mostrar ? <ContainerVacio /> : <ShowProfiles />}
 
         <Pressable
           onPress={handleOpenModal}
@@ -155,7 +160,7 @@ const ContainerVacio = () => (
   </Box>
 );
 
-const ShowProfiles = (datosPerfiles: any) => (
+const ShowProfiles = () => (
   <Box
     sx={{
       gap: 40,
@@ -181,8 +186,8 @@ const ShowProfiles = (datosPerfiles: any) => (
 
     <Divider sx={{ marginVertical: 0 }} />
 
-   {/*  {datosPerfiles.map((item: any) => (
+    {datosPerfiles.map((item) => (
       <ListProvider data={item} />
-    ))} */}
+    ))}
   </Box>
 );
