@@ -1,85 +1,188 @@
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
+import { Image, Pressable, StyleSheet } from "react-native";
 import { Text, View } from "../../components/Themed";
-import { useContext, useState } from "react";
-import {
-  AddIcon,
-  Avatar,
-  Box,
-  Button,
-  ButtonIcon,
-  ButtonText,
-  Center,
-  Divider,
-  HStack,
-  Heading,
-  Input,
-  InputField,
-  VStack,
-} from "@gluestack-ui/themed";
-import { useDispatch, useSelector } from "react-redux";
-import Header from "../../components/trip/Header";
-export default function Garage() {
-  const [marca, setMarca] = useState('');
-  const [modelo, setModelo] = useState('');
-  const [ano, setAno] = useState('');
+import { useEffect, useState } from "react";
+import { Box, Divider } from "@gluestack-ui/themed";
+import Modal from "../../components/Profile/ModalProfile";
 
-  const sendProfile = () => {
-    console.log('Marca:', marca);
-    console.log('Modelo:', modelo);
-    console.log('Año:', ano);
-    // Aquí puedes realizar otras acciones con los valores, como enviarlos a través de una API
+import { supabase } from "../../lib/supabase";
+import ListProvider from "../../components/Profile/ListProfile";
+
+
+export default function Garage() {
+  //state para mostrar perfiles o vacio
+  const [mostrar, setmostrar] = useState(false);
+  console.log(mostrar);
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    /*   mostrar(); */
+  };
+  const handleOpenModal = () => {
+    setOpenModal(true);
+    /*   mostrar(); */
   };
 
+  const [datosPerfiles, setdatosPerfiles] = useState([])
+
+
+  useEffect(() => {
+    const captureData = async () => {
+      let { data: perfiles, error } = await supabase
+        .from("perfiles")
+        .select("id,marca,modelo,año, imagen");
+
+
+        console.log(perfiles)
+        setdatosPerfiles(perfiles)
+    };
+
+
+    captureData()
+
+   
+   
+  }, []);
+
   return (
-    <View style={{ flex: 1, alignItems: "center", paddingTop: 30 }}>
-      <Center sx={{ height: 580, width: 370 }}>
-        <Text>Registro de motocicletas</Text>
-        <Divider />
+    <View style={{ flex: 1, alignItems: "center", paddingTop: 0 }}>
+      <Box sx={{ marginTop: 80, width: "$full", paddingHorizontal: 30 }}>
+        <Text
+          style={{
+            fontFamily: "MontserratSemibold",
+            fontSize: 24,
+            textAlign: "center",
+          }}
+        >
+          Garage de motocicletaas
+        </Text>
 
-        <Text>Agregar motocicleta:</Text>
+        {mostrar ? <ContainerVacio /> : <ShowProfiles datosPerfiles={datosPerfiles}  />}
 
-        <Box>
-          <Input variant="underlined" size="lg">
-            <InputField
-              placeholder="Marca"
-              value={marca}
-              onChangeText={(text) => setMarca(text)}
-              sx={{color: "$white"}}
-            />
-          </Input>
-          <Input variant="underlined" size="lg">
-            <InputField
-              placeholder="Modelo"
-              value={modelo}
-              onChangeText={(text) => setModelo(text)}
-              sx={{color: "$white"}}
-
-            />
-          </Input>
-          <Input variant="underlined" size="lg">
-            <InputField
-              placeholder="Año"
-              keyboardType="numeric"
-              value={ano}
-              onChangeText={(text) => setAno(text)}
-              sx={{color: "$white"}}
-
-            />
-          </Input>
-
-          <Button
-            size="md"
-            variant="outline"
-            action="secondary"
-            onPress={sendProfile}
+        <Pressable
+          onPress={handleOpenModal}
+          style={{
+            padding: 8,
+            backgroundColor: "#066AFF",
+            borderRadius: 32,
+            marginTop: 60,
+            marginHorizontal: 20,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "MontserratSemibold",
+              textAlign: "center",
+            }}
           >
-            <ButtonText>Guardar </ButtonText>
-            <ButtonIcon as={AddIcon} />
-          </Button>
-        </Box>
-      </Center>
+            Agregar una nueva moto
+          </Text>
+        </Pressable>
+
+        <Modal status={openModal} onclose={handleCloseModal} />
+      </Box>
     </View>
   );
 }
+
+const commonStyles = StyleSheet.create({
+  // Estilos de fuente numerados
+  container: {
+    flex: 1,
+    paddingTop: 25,
+    padding: 10,
+  },
+  input: {
+    /*    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    paddingLeft: 10,
+    marginBottom: 10, */
+    color: "white",
+    fontFamily: "MontserratRegular", // Reemplaza 'YourChosenFont' con el nombre de tu fuente
+  },
+
+  miniContainer: {
+    /* borderWidth: 1,
+    borderColor: "red", */
+    paddingHorizontal: 15,
+  },
+  fontStyle1: {
+    fontSize: 20,
+    fontFamily: "MontserratRegular",
+    textAlign: "center",
+  },
+  fontStyle2: {
+    fontSize: 20,
+    fontFamily: "MontserratSemibold",
+    textAlign: "center",
+  },
+  fontStyle3: {
+    fontSize: 16,
+    fontFamily: "MontserratThin",
+    textAlign: "center",
+  },
+  fontStyle4: {
+    fontSize: 14,
+    fontFamily: "MontserratSemibold",
+    textAlign: "center",
+  },
+});
+
+const ContainerVacio = () => (
+  <Box
+    sx={{
+      marginVertical: 0,
+      gap: 10,
+      alignItems: "center",
+    }}
+  >
+    <Image
+      style={{ width: 350, height: 200, marginTop: 100 }}
+      source={require(`../../assets/images/nuevoPer.jpg`)} // Intenta importar la imagen usando la ruta específica
+    />
+    <Text
+      style={{
+        fontFamily: "MontserratSemibold",
+        textAlign: "center",
+        marginTop: 20,
+      }}
+    >
+      Aqui podras ver tus motos, empieza por agregar una!
+    </Text>
+  </Box>
+);
+
+const ShowProfiles = (datosPerfiles: any) => (
+  <Box
+    sx={{
+      gap: 40,
+      marginHorizontal: 0,
+      marginTop: 80,
+      backgroundColor: "rgba(25, 25, 25, 1),",
+      paddingVertical: 30,
+      paddingHorizontal: 10,
+
+      borderRadius: 8,
+      width: "$full",
+    }}
+  >
+    <Text
+      style={{
+        fontFamily: "MontserratRegular",
+        textAlign: "center",
+        fontSize: 18,
+      }}
+    >
+      Motocicletas registradas
+    </Text>
+
+    <Divider sx={{ marginVertical: 0 }} />
+
+   {/*  {datosPerfiles.map((item: any) => (
+      <ListProvider data={item} />
+    ))} */}
+  </Box>
+);
