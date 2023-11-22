@@ -54,7 +54,7 @@ export default function listProfile({ data }) {
           flexDirection: "row",
           alignContent: "center",
           alignItems: "center",
-          marginVertical: 5,
+          marginVertical: 10,
           paddingHorizontal:10
         }}
       >

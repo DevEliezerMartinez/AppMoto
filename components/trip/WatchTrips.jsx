@@ -17,7 +17,7 @@ import {
   TextareaInput,
   Center,
 } from "@gluestack-ui/themed";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Image } from "react-native";
 import { FabLabel } from "@gluestack-ui/themed";
 import { AddIcon } from "@gluestack-ui/themed";
 import { ModalContent } from "@gluestack-ui/themed";
@@ -32,7 +32,6 @@ const WatchTrips = () => {
   const [showModal, setShowModal] = useState();
   const [totalKilometros, setTotalKilometros] = useState(0); // Nuevo estado para el total de kilómetros
   const [refreshData, setRefreshData] = useState(false);
-
 
   //modal
   const [showDateText, setShowDateText] = useState(false);
@@ -57,7 +56,6 @@ const WatchTrips = () => {
 
   const onSubmit = async () => {
     setShowModal(false);
-    
 
     const formData = {
       destine,
@@ -83,7 +81,6 @@ const WatchTrips = () => {
       console.log(error);
     }
     setRefreshData(true);
-
   };
 
   const handleDate = (event, selectedDate) => {
@@ -142,7 +139,9 @@ const WatchTrips = () => {
           }));
 
           setResultados(formattedData);
-          console.log("\n .-",formattedData.fotografia)
+          console.log("---------");
+          console.log(formattedData);
+          console.log("---------");
           // Calcular la sumatoria de km_viaje
           const total = formattedData.reduce(
             (accumulatedTotal, currentItem) =>
@@ -153,7 +152,6 @@ const WatchTrips = () => {
 
           setIsLoading(false);
           setRefreshData(false);
-
         }
       } catch (error) {
         console.log("Error al obtener datos:", error);
@@ -171,14 +169,14 @@ const WatchTrips = () => {
 
   const openModalForm = () => {
     // Restablecer estados relacionados con la imagen y la fecha al abrir el modal
-  setshowBtnImage(true);
-  setshowTitleImage(false);
-  setShow(false);
-  setButtonDate(true);
-  setDate(new Date());
-  setShowDateText(false)
+    setshowBtnImage(true);
+    setshowTitleImage(false);
+    setShow(false);
+    setButtonDate(true);
+    setDate(new Date());
+    setShowDateText(false);
 
-  showModal == true ? setShowModal(false) : setShowModal(true);
+    showModal == true ? setShowModal(false) : setShowModal(true);
   };
 
   const renderContent = () => {
@@ -207,7 +205,6 @@ const WatchTrips = () => {
               }}
             >
               <Image
-                
                 source={{ uri: item.fotografia }}
                 alt="imagen-destino"
                 role="img"

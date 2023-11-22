@@ -58,7 +58,7 @@ export default function Garage({ status, onclose }) {
   };
 
   const close = () => {
-    onClose();
+    onclose();
   };
 
   // imagen
@@ -71,7 +71,6 @@ export default function Garage({ status, onclose }) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
       allowsEditing: false,
-      aspect: [4, 3],
       quality: 1,
     });
 
@@ -120,7 +119,8 @@ export default function Garage({ status, onclose }) {
 
     setMarca()
     setModelo()
-    setSelectedValue()
+    setImage()
+    close()
   };
 
   // datos ejemplo:

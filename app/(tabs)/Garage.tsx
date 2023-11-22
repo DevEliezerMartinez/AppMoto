@@ -1,7 +1,7 @@
 import { Image, Pressable, StyleSheet } from "react-native";
 import { Text, View } from "../../components/Themed";
 import { useEffect, useState } from "react";
-import { Box, Divider } from "@gluestack-ui/themed";
+import { Box, Divider, ScrollView } from "@gluestack-ui/themed";
 import Modal from "../../components/Profile/ModalProfile";
 
 import { supabase } from "../../lib/supabase";
@@ -28,27 +28,48 @@ let datosPerfiles = [
 ];
 
 export default function Garage() {
+  const [DataProfile, setDataProfile] = useState([]);
   //state para mostrar perfiles o vacio
-  const [mostrar, setmostrar] = useState(true);
+  const [mostrar, setmostrar] = useState(false);
   console.log(mostrar);
 
   const [openModal, setOpenModal] = useState(false);
 
   const handleCloseModal = () => {
     setOpenModal(false);
-  /*   mostrar(); */
+    fetchProfiles(); // Call fetchProfiles when the modal is closed
+
+    /*   mostrar(); */
   };
   const handleOpenModal = () => {
     setOpenModal(true);
-  /*   mostrar(); */
+    /*   mostrar(); */
+  };
+
+  const fetchProfiles = async () => {
+    try {
+      let { data: perfiles, error } = await supabase
+        .from("perfiles")
+        .select("*");
+
+      // Verifica si perfiles no es null antes de actualizar el estado
+      if (perfiles !== null) {
+        setDataProfile(perfiles);
+        console.log("datos importados corrrectamente");
+        perfiles.map((item) => {
+          console.log(item);
+        });
+      } else {
+        console.error("La respuesta de Supabase fue nula.");
+      }
+    } catch (error) {
+      console.error("Error al obtener perfiles:", error);
+    }
   };
 
   useEffect(() => {
-    
-  
-    
-  }, [])
-  
+    fetchProfiles();
+  }, []);
 
   return (
     <View style={{ flex: 1, alignItems: "center", paddingTop: 0 }}>
@@ -63,7 +84,11 @@ export default function Garage() {
           Garage de motocicletaas
         </Text>
 
-        {mostrar ? <ContainerVacio /> : <ShowProfiles />}
+        {mostrar ? (
+          <ContainerVacio />
+        ) : (
+          <ShowProfiles DataProfile={DataProfile} />
+        )}
 
         <Pressable
           onPress={handleOpenModal}
@@ -71,7 +96,7 @@ export default function Garage() {
             padding: 8,
             backgroundColor: "#066AFF",
             borderRadius: 32,
-            marginTop: 60,
+            marginTop: 30,
             marginHorizontal: 20,
           }}
         >
@@ -160,7 +185,7 @@ const ContainerVacio = () => (
   </Box>
 );
 
-const ShowProfiles = () => (
+const ShowProfiles = ({ DataProfile }: { DataProfile: any }) => (
   <Box
     sx={{
       gap: 40,
@@ -186,8 +211,10 @@ const ShowProfiles = () => (
 
     <Divider sx={{ marginVertical: 0 }} />
 
-    {datosPerfiles.map((item) => (
-      <ListProvider data={item} />
-    ))}
+    <ScrollView sx={{ height: 320,}}>
+      {DataProfile.map((item: any) => (
+        <ListProvider key={item.modelo} data={item} />
+      ))}
+    </ScrollView>
   </Box>
 );

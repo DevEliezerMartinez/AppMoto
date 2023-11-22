@@ -21,7 +21,6 @@ export default function TabOneScreen() {
 
   const miDato = useSelector((state: { miDato: number }) => state.miDato);
 
-  console.log(miDato)
 
   return (
    

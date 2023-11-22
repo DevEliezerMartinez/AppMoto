@@ -22,15 +22,11 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { supabase } from "../../lib/supabase";
 import { actualizarDato } from "../../src/slice";
-import { useDispatch, useSelector } from 'react-redux';
-
-
-
+import { useDispatch, useSelector } from "react-redux";
 
 export default function firstTrip() {
   const dispatch = useDispatch();
 
-  
   const [showModal, setShowModal] = useState(false);
   const [showDateText, setShowDateText] = useState(false);
   const [showButtonDate, setButtonDate] = useState(true);
@@ -45,12 +41,10 @@ export default function firstTrip() {
   const [notes, setNotes] = useState("");
 
   // boton de imagen
-  const [showBtnImage, setshowBtnImage] = useState(true)
-  const [showTitleImage, setshowTitleImage] = useState(false)
-
+  const [showBtnImage, setshowBtnImage] = useState(true);
+  const [showTitleImage, setshowTitleImage] = useState(false);
 
   const [image, setImage] = useState("");
-  
 
   const onSubmit = async () => {
     setShowModal(false);
@@ -61,31 +55,36 @@ export default function firstTrip() {
       km,
       dateTrip,
       notes,
-      image
+      image,
     };
 
-    let some = JSON.stringify(formData.dateTrip);
-    let dateParsed = some.slice(1, 11);
+    
 
-    const { error } = await supabase
-      .from("viajes")
-      .insert({
-        fotografia: image,
-        destino: destine,
-        km_viaje: km,
-        fecha: dateParsed,
-        notas: notes,
-
-      });
+    const { error } = await supabase.from("viajes").insert({
+      fotografia: image,
+      destino: destine,
+      km_viaje: km,
+      fecha: dateTrip,
+      notas: notes,
+    });
 
     if (error) {
-      console.log("true");
       console.log(error);
     }
   };
 
   const handleDate = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
+   
+    let currentDate = selectedDate;
+    setShow(false);
+
+    
+
+    currentDate = JSON.stringify(currentDate);
+    currentDate = currentDate.slice(1, 11);
+    console.log("//////////")
+    console.log(currentDate)
+    setDate(currentDate);
     setDateTrip(currentDate);
     setShow(false);
     setDate(currentDate);
@@ -104,9 +103,8 @@ export default function firstTrip() {
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    console.log("funcion")
-    setshowBtnImage(false)
-    setshowTitleImage(true)
+    setshowBtnImage(false);
+    setshowTitleImage(true);
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -114,18 +112,10 @@ export default function firstTrip() {
       quality: 1,
     });
 
-    /* console.log("---",result.assets);
-     */
-
     if (!result.canceled) {
-      console.log("resultado", result.assets[0].uri);
-
-       setImage(result.assets[0].uri);
+      setImage(result.assets[0].uri);
     }
   };
-
-
-  
 
   const ref = React.useRef(null);
 
@@ -182,30 +172,30 @@ export default function firstTrip() {
                   alignItems: "center",
                 }}
               >
-                
+                {showBtnImage && (
+                  <>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      action="secondary"
+                      onPress={pickImage}
+                    >
+                      <ButtonText>
+                        <Text style={commonStyles.fontStyle3}>
+                          Seleccione una imagen
+                        </Text>
+                      </ButtonText>
+                    </Button>
+                  </>
+                )}
 
-
-                {showBtnImage&& (<>
-
-                  <Button size="sm" variant="outline" action="secondary" onPress={pickImage}>
-                  <ButtonText>
-                    <Text style={commonStyles.fontStyle3}>
-                      Seleccione una imagen
+                {showTitleImage && (
+                  <>
+                    <Text style={commonStyles.fontStyle2}>
+                      Imagen seleccionada
                     </Text>
-                  </ButtonText>
-                </Button>
-                
-                
-                </>)}
-
-
-                {showTitleImage&&(<>
-
-                <Text style={commonStyles.fontStyle2}>Imagen seleccionada</Text>
-
-                
-                
-                </>)}
+                  </>
+                )}
 
                 <Input variant="underlined" size="md">
                   <InputField
@@ -228,7 +218,6 @@ export default function firstTrip() {
 
                 {show && (
                   <DateTimePicker
-                    testID="dateTimePicker"
                     value={date}
                     onChange={handleDate}
                     mode="date"
