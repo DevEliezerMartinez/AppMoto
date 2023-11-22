@@ -69,17 +69,21 @@ export default function Garage({ status, onclose }) {
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: false,
       allowsEditing: false,
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      // Use spread operator to preserve previous images
+    if (!result.canceled) {
+
+      console.log(result.assets[0].uri)
+      setImage(result.assets[0].uri)
+
+     /*  // Use spread operator to preserve previous images
       setImage((prevImages) => [
         ...prevImages,
         ...result.assets.map((asset) => asset.uri),
-      ]);
+      ]); */
     }
   };
 
@@ -229,7 +233,7 @@ export default function Garage({ status, onclose }) {
                 action="secondary"
                 onPress={pickImage}
               >
-                <ButtonText>Añadir imageeen</ButtonText>
+                <ButtonText>Añadir imagen</ButtonText>
               </Button>
 
               <Button

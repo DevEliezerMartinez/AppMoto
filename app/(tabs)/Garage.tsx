@@ -31,7 +31,6 @@ export default function Garage() {
   const [DataProfile, setDataProfile] = useState([]);
   //state para mostrar perfiles o vacio
   const [mostrar, setmostrar] = useState(false);
-  console.log(mostrar);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -55,7 +54,6 @@ export default function Garage() {
       // Verifica si perfiles no es null antes de actualizar el estado
       if (perfiles !== null) {
         setDataProfile(perfiles);
-        console.log("datos importados corrrectamente");
         perfiles.map((item) => {
           console.log(item);
         });
@@ -211,7 +209,7 @@ const ShowProfiles = ({ DataProfile }: { DataProfile: any }) => (
 
     <Divider sx={{ marginVertical: 0 }} />
 
-    <ScrollView sx={{ height: 320,}}>
+    <ScrollView sx={{  height: 320,}}>
       {DataProfile.map((item: any) => (
         <ListProvider key={item.modelo} data={item} />
       ))}

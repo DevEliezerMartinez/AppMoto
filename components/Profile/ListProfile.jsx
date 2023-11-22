@@ -40,6 +40,7 @@ import {
 export default function listProfile({ data }) {
   const seleccinarPerfil = () => {
     console.log(data.modelo);
+    console.log(data)
   };
 
 
