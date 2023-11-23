@@ -6,26 +6,7 @@ import Modal from "../../components/Profile/ModalProfile";
 
 import { supabase } from "../../lib/supabase";
 import ListProvider from "../../components/Profile/ListProfile";
-let datosPerfiles = [
-  {
-    marca: "Italika",
-    modelo: "125z",
-    image: "../../assets/images/150z.png",
-    año: "2020",
-  },
-  {
-    marca: "Italika",
-    modelo: "150z",
-    image: "../../assets/images/150z.png",
-    año: "2020",
-  },
-  {
-    marca: "Italika",
-    modelo: "200z",
-    image: "../../assets/images/150z.png",
-    año: "2020",
-  },
-];
+
 
 export default function Garage() {
   const [DataProfile, setDataProfile] = useState([]);
@@ -55,7 +36,6 @@ export default function Garage() {
       if (perfiles !== null) {
         setDataProfile(perfiles);
         perfiles.map((item) => {
-          console.log(item);
         });
       } else {
         console.error("La respuesta de Supabase fue nula.");

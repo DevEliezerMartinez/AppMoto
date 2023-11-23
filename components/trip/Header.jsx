@@ -1,6 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { Text, View } from "../../components/Themed";
+import { useSelector } from 'react-redux';
+import { Text, View } from "../Themed";
 import {
   Avatar,
   AvatarFallbackText,
@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
 });
 
 const Header = () => {
+  const counterValue = useSelector((state) => state.IDlist.counter);
   return (
       <View style={styles.container}>
         <HStack
@@ -39,6 +40,7 @@ const Header = () => {
           }}
         >
           <Text style={styles.title}>Mis viajes</Text>
+          <Text>{counterValue}</Text>
           <Avatar>
             <AvatarFallbackText>SS</AvatarFallbackText>
             <AvatarImage

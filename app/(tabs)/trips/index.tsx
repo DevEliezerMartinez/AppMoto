@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { Text, View } from "../../../components/Themed";
 import { useContext, useState } from "react";
 import {
@@ -19,6 +18,7 @@ import { commonStyles } from "../../../assets/commonStyles"; // Asegúrate de qu
 import { useDispatch, useSelector } from "react-redux";
 export default function TabOneScreen() {
 
+  
   const miDato = useSelector((state: { miDato: number }) => state.miDato);
 
 

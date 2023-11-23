@@ -1,48 +1,23 @@
 import { Image, Pressable, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-
 import { Text, View } from "../Themed";
 import { useState } from "react";
-import {
-  ModalBackdrop,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  Input,
-  InputField,
-  Select,
-  SelectTrigger,
-  SelectInput,
-  SelectIcon,
-  Icon,
-  ChevronDownIcon,
-  SelectPortal,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicatorWrapper,
-  SelectDragIndicator,
-  SelectItem,
-  Button,
-  ButtonText,
-  Box,
-  ButtonIcon,
-  Divider,
-  Center,
-  Avatar,
-  VStack,
-  HStack,
-  AvatarFallbackText,
-  AvatarImage,
-} from "@gluestack-ui/themed";
+import { VStack } from "@gluestack-ui/themed";
+import { useSelector } from 'react-redux';
+import { useDispatch } from "react-redux";
+import { update } from "../../src/sliceID";
 
 
 export default function listProfile({ data }) {
-  const seleccinarPerfil = () => {
-    console.log(data.modelo);
-    console.log(data)
-  };
+  const counterValue = useSelector((state) => state.IDlist.counter);
+  const dispatch = useDispatch();
+ console.log(counterValue);
 
+
+  const seleccinarPerfil = () => {
+    dispatch(update(data.id_perfil));
+    console.log(data.id_perfil); 
+  };
 
   return (
     <>
@@ -56,17 +31,20 @@ export default function listProfile({ data }) {
           alignContent: "center",
           alignItems: "center",
           marginVertical: 10,
-          paddingHorizontal:10
+          paddingHorizontal: 10,
+          borderWidth: 1,
+          borderColor: "red"
         }}
       >
         <Image
           style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }}
-          source={require(`../../assets/images/150z.png`)}  // Intenta importar la imagen usando la ruta específica
+          source={require(`../../assets/images/150z.png`)} // Intenta importar la imagen usando la ruta específica
         />
         <VStack>
           <Text
             style={{
               fontFamily: "MontserratBold",
+
               fontSize: 16,
               textTransform: "uppercase",
             }}

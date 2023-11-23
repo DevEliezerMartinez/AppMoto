@@ -25,8 +25,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { ModalHeader } from "@gluestack-ui/themed";
 import { ButtonText } from "@gluestack-ui/themed";
+import { useSelector } from 'react-redux';
 
 const WatchTrips = () => {
+  const IDglobal = useSelector((state) => state.IDlist.counter);
   const [resultados, setResultados] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState();
@@ -128,7 +130,8 @@ const WatchTrips = () => {
       try {
         const { data, error, status } = await supabase
           .from("viajes")
-          .select(`id_viaje, fecha, destino, fotografia, km_viaje`);
+          .select(`id_viaje, fecha, destino, fotografia, km_viaje`)
+          .eq('id_perfil', IDglobal)
 
         if (error) {
           console.log("Error al obtener datos:", error);
