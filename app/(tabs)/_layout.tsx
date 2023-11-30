@@ -1,23 +1,29 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
-import { Pressable, useColorScheme } from "react-native";
-
-import Colors from "../../constants/Colors";
+import { Tabs } from "expo-router";
 import { Image } from "react-native";
-import { useFonts } from "expo-font";
-
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
+import { useEffect, useState } from "react";
+import {  useSelector } from "react-redux";
 
 export default function TabLayout() {
-  const [loaded] = useFonts({
-    MontserratThin: require("../../assets/fonts/Montserrat/static/Montserrat-Black.ttf"),
-  });
+  const routeMatch = useSelector(
+    (state: { routeMatch: any }) => state.routeMatch
+  );
 
-  if (!loaded) {
-    return null;
-  }
+
+  const routeTrip = useSelector(
+    (state: { routeTrip: any }) => state.routeTrip
+  );
+
+  const [servicesHref, setServicesHref] = useState(null);
+  const [tripsHref, setripsHref] = useState(null);
+
+
+  useEffect(() => {
+    setServicesHref(routeMatch.counter);
+    setripsHref(routeTrip.counter);
+
+  }, [routeMatch]);
+
+ 
 
   const ColorsSet = {
     light: {
@@ -48,7 +54,6 @@ export default function TabLayout() {
         },
       }}
     >
-
       <Tabs.Screen
         name="Garage"
         options={{
@@ -71,6 +76,8 @@ export default function TabLayout() {
         options={{
           title: "Servicios",
           headerShown: false,
+          href: tripsHref,
+
           tabBarLabelStyle: {
             fontFamily: "MontserratSemibold", // Usa el nombre definido en Font.loadAsync
             fontSize: 13,
@@ -89,8 +96,9 @@ export default function TabLayout() {
         options={{
           title: "Mis viajes",
           headerShown: false,
+          href: servicesHref,
           tabBarLabelStyle: {
-            fontFamily: "MontserratSemibold", // Usa el nombre definido en Font.loadAsync
+            fontFamily: "MontserratSemibold",
             fontSize: 13,
           },
           tabBarIcon: () => (

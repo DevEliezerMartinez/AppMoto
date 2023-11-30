@@ -29,6 +29,7 @@ const Header = () => {
           <Avatar>
             <AvatarFallbackText>SS</AvatarFallbackText>
             <AvatarImage
+            alt="icono"
               source={{
                 uri: "https://images.pexels.com/photos/18971921/pexels-photo-18971921/free-photo-of-man-in-helmet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
               }}

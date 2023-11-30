@@ -103,11 +103,7 @@ const commonStyles = StyleSheet.create({
     padding: 10,
   },
   input: {
-    /*    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 10,
-    marginBottom: 10, */
+   
     color: "white",
     fontFamily: "MontserratRegular", // Reemplaza 'YourChosenFont' con el nombre de tu fuente
   },
