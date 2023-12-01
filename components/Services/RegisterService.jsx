@@ -35,7 +35,6 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
   };
 
   const handleConfirm = (date) => {
-    console.log("A date has been picked: ", date);
     setSelectedDate(date);
     hideDatePicker();
   };
@@ -66,7 +65,6 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
       ]);
 
       if (error) {
-        console.log("true");
         console.log(error);
       }
     } catch (error) {
