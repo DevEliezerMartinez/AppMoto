@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet } from "react-native";
+import { Image, Pressable, StyleSheet, Switch } from "react-native";
 import { Text, View } from "../../../components/Themed";
 import {
   Avatar,
@@ -9,41 +9,56 @@ import {
   Divider,
   HStack,
   ScrollView,
+  Select,
+  SelectBackdrop,
+  SelectContent,
+  SelectInput,
+  SelectItem,
+  SelectPortal,
+  SelectTrigger,
   VStack,
 } from "@gluestack-ui/themed";
 import Header from "../../../components/Services/Header";
 import BoxService from "../../../components/Services/BoxService";
 import { useEffect, useState } from "react";
 import Modal from "../../../components/Services/FormularioModal";
-import { useSelector } from 'react-redux';
-import { useDispatch } from "react-redux";
-import { update } from "../../../src/sliceServices"; // Ajusta la ruta a tu archivo miSlice
+import "../../../components/Services/SheduleService";
+import { useSelector } from "react-redux";
+
 import { supabase } from "../../../lib/supabase";
 
-
 export default function TabTwoScreen() {
-  const [Vacio, setSetVacio] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [dbDatos, setdbDatos] =  useState([]);
-  
-  
+  const [dbDatos, setdbDatos] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("2"); // Nuevo estado para la opción seleccionada
 
-  const counterValue = useSelector((state) => state.listServices.counter);
+  const miObjeto = useSelector((state) => state.infoProfile.miObjeto);
 
-const mostrar =   async()=> {
-  let { data: servicios, error } = await supabase
-  .from('servicios')
-  .select('costo,fecha,notas,piezas,status,id_servicio')
+  const mostrar = async () => {
+    let filterStatus = null;
 
-  setdbDatos(servicios)
-}
- 
-useEffect(() => {
-  mostrar()
- 
-}, []);
+    if (selectedOption === "1") {
+      filterStatus = "agendar";
+    }
+    if (selectedOption === "2") {
+      filterStatus = "Registrar";
+    }
 
-  
+
+    let { data: servicios, error } = await supabase
+      .from("servicios")
+      .select("costo,fecha,notas,piezas,status,id_servicio")
+      .eq("id_perfil", miObjeto.ID)
+      .eq("status", filterStatus);
+    ;
+
+    setdbDatos(servicios);
+  };
+
+  useEffect(() => {
+    mostrar();
+  }, [miObjeto.ID, openModal, selectedOption]);
+
   const handleOpenModal = () => {
     setOpenModal(true);
   };
@@ -53,47 +68,22 @@ useEffect(() => {
     mostrar();
   };
 
-  let datos = [
-    {
-      id: 1,
-      status: "Hecho",
-      descripcion: "Cambio de aceite, bujias ...",
-      fecha: "2023-15-10",
-    },
-    {
-      id: 2,
-      status: "Pendiente",
-      descripcion: "frenos, balancines ...",
-      fecha: "2023-15-10",
-    },
-    {
-      id: 3,
-      status: "Proximo",
-      descripcion: "Cambio de aceite, bujias 3",
-      fecha: "2023-15-03",
-    },
-    {
-      id: 4,
-      status: "Hecho",
-      descripcion: "frenos, balancines 4",
-      fecha: "2023-15-04",
-    },
-  
-  
-  ];
+  const handleSelectChange = (value) => {
+    setSelectedOption(value);
+  };
 
   return (
     <View style={commonStyles.container}>
       <Header />
 
-
       <View style={commonStyles.miniContainer}>
         <Center>
           <Image
-            source={require("../../../assets/images/150z.png")}
             alt="imagen-destino"
+            source={{ uri: miObjeto.ruta }}
             style={{
               height: 200,
+              width: 300,
               resizeMode: "cover",
               borderRadius: 3,
             }}
@@ -108,14 +98,14 @@ useEffect(() => {
               textAlign: "center",
             }}
           >
-            ITALIKA 150Z - 2023
+            {miObjeto.marca} {miObjeto.modelo} {miObjeto.año}
           </Text>
         </Center>
 
         <Divider
           sx={{
             bg: "#6E6E6E",
-            marginVertical: 10,
+            marginVertical: 4,
           }}
         />
 
@@ -126,10 +116,29 @@ useEffect(() => {
             textAlign: "center",
           }}
         >
-          Historial de servicioos
+          Historial de servicios
         </Text>
-        
-        {!counterValue ? <ContainerVacio /> : <ContainerScroll info={dbDatos} />}
+
+        <Select onValueChange={handleSelectChange}>
+          <SelectTrigger variant="underlined" size="md">
+            <SelectInput
+              sx={{
+                color: "white",
+                fontFamily: "MontserratRegular", // Reemplaza 'YourChosenFont' con el nombre de tu fuente
+              }}
+              placeholder="Selecciona una opcion"
+            />
+          </SelectTrigger>
+          <SelectPortal>
+            <SelectBackdrop />
+            <SelectContent>
+              <SelectItem label="Servicios agendados" value="1" />
+              <SelectItem label="Servicios Registrados" value="2" />
+            </SelectContent>
+          </SelectPortal>
+        </Select>
+
+        <ContainerScroll info={dbDatos} />
 
         <Modal status={openModal} onClose={handleCloseModal} />
 
@@ -160,30 +169,18 @@ useEffect(() => {
 }
 
 const ContainerScroll = ({ info }) => (
-  <ScrollView sx={{marginTop: 10, height: 230}}>
+  <ScrollView sx={{ marginTop: 10, height: 230 }}>
     {info.map((item, index) => (
       <BoxService key={item.id_servicio} data={item} index={index} />
-    
     ))}
   </ScrollView>
 );
-
-const ContainerVacio = () => (
-  <View style={{ marginVertical: 100 }}>
-    <Text style={commonStyles.fontStyle4}>
-      Registra los servicios, empieza dando click!
-    </Text>
-  </View>
-);
-
-
-
 
 const commonStyles = StyleSheet.create({
   // Estilos de fuente numerados
   container: {
     flex: 1,
-    paddingTop: 25,
+    paddingTop: 10,
     padding: 10,
   },
 

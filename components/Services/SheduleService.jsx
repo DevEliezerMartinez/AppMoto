@@ -10,35 +10,26 @@ import {
 } from "@gluestack-ui/themed";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { supabase } from "../../lib/supabase";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-export default function SheduleService({ onSubmit, onClose }) {
-
-
+export default function SheduleService({ onSubmit, onClose, IdInfo }) {
   // states for datepicker
-  const [date, setDate] = useState(new Date());
-  const [showButtonDate, setButtonDate] = useState(true);
-  const [mode, setMode] = useState("date");
-  const [showDateText, setShowDateText] = useState(false);
-  const [show, setShow] = useState(false);
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
   };
 
-  const showDatepicker = () => {
-    showMode("date");
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
   };
-  const handleDate = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    let adi = currentDate;
-    adi = JSON.stringify(adi);
-    adi = adi.slice(1, 11);
 
-    setShow(false);
-    setDate(adi);
-    setShowDateText(true);
-    setButtonDate(false);
+  const handleConfirm = (date) => {
+    console.log("A date has been picked: ", date);
+    setSelectedDate(date);
+    hideDatePicker();
   };
 
   //end dates
@@ -47,32 +38,16 @@ export default function SheduleService({ onSubmit, onClose }) {
   const [detalles, setDetalles] = useState("");
 
   const handleSubmit = async () => {
-    let agendar = "Agendar"
+    let agendar = "agendar";
     try {
-      // Insertar datos en la tabla 'TuTabla' de Supabase
-      /* const { data, error } = await supabase
-         .from('servicios')
-         .insert([{ estado: agendar, fecha: date, notas: detalles }]);
- 
-       if (error) {
-         console.error("Error al enviar datos a Supabase:", error.message);
-       } else {
-         console.log("Datos enviados con éxito:", data);
-       }
- 
-       // Llamadas a las funciones onSubmit y onClose después de enviar datos a Supabase
-       onSubmit();
-       onClose();
-       */
-
       onSubmit();
       onClose();
 
       const { error } = await supabase
         .from("servicios")
         .insert([
-          { fecha: date, status: agendar, notas: detalles },
-        ])
+          { fecha: selectedDate, status: agendar, notas: detalles, id_perfil: IdInfo },
+        ]);
 
       if (error) {
         console.log("true");
@@ -83,10 +58,8 @@ export default function SheduleService({ onSubmit, onClose }) {
     }
   };
 
-
   return (
     <Center>
-
       <Box
         id="fecha"
         sx={{
@@ -96,37 +69,18 @@ export default function SheduleService({ onSubmit, onClose }) {
           alignItems: "center",
         }}
       >
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            onChange={handleDate}
-            mode="date"
-            display="calendar"
-          />
+        <Button variant="outline" action="positive" onPress={showDatePicker}>
+          <ButtonText>Seleccionar una fecha</ButtonText>
+        </Button>
+        {selectedDate && (
+          <Text style={{color: "white"}}>{`Fecha seleccionada: ${selectedDate.toLocaleDateString()}`}</Text>
         )}
-
-        {showButtonDate && (
-          <Button
-            size="md"
-            variant="outline"
-            action="primary"
-            isDisabled={false}
-            isFocusVisible={false}
-            onPress={showDatepicker}
-          >
-            <ButtonText>Seleccionar fecha</ButtonText>
-          </Button>
-        )}
-
-        {showDateText && (
-          <Text
-            id="fechaR"
-            style={{ fontFamily: "MontserratRegular", color: "white" }}
-          >
-            Fecha: {date.toLocaleString()}
-          </Text>
-        )}
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="date"
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
+        />
       </Box>
 
       <Textarea size="md" w="$64">

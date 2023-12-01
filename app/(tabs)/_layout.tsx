@@ -1,29 +1,22 @@
 import { Tabs } from "expo-router";
 import { Image } from "react-native";
 import { useEffect, useState } from "react";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 export default function TabLayout() {
   const routeMatch = useSelector(
     (state: { routeMatch: any }) => state.routeMatch
   );
 
-
-  const routeTrip = useSelector(
-    (state: { routeTrip: any }) => state.routeTrip
-  );
+  const routeTrip = useSelector((state: { routeTrip: any }) => state.routeTrip);
 
   const [servicesHref, setServicesHref] = useState(null);
   const [tripsHref, setripsHref] = useState(null);
 
-
   useEffect(() => {
     setServicesHref(routeMatch.counter);
     setripsHref(routeTrip.counter);
-
   }, [routeMatch]);
-
- 
 
   const ColorsSet = {
     light: {
@@ -71,6 +64,7 @@ export default function TabLayout() {
           ),
         }}
       />
+     
       <Tabs.Screen
         name="Services"
         options={{
@@ -109,6 +103,8 @@ export default function TabLayout() {
           ),
         }}
       />
+
+    
     </Tabs>
   );
 }

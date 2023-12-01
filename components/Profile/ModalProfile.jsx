@@ -38,7 +38,7 @@ import {
 
 import { AddIcon } from "@gluestack-ui/themed";
 import { supabase } from "../../lib/supabase";
-import ListProvider from "../../components/Profile/ListProfile";
+import { TrashIcon } from "@gluestack-ui/themed";
 
 export default function Garage({ status, onclose }) {
   //state para mostrar perfiles o vacio
@@ -62,11 +62,10 @@ export default function Garage({ status, onclose }) {
   };
 
   // imagen
-  const [image, setImage] = useState([]);
+  const [image, setImage] = useState(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const pickImage = async () => {
-    console.log("funcion imagen");
-
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: false,
@@ -75,31 +74,23 @@ export default function Garage({ status, onclose }) {
     });
 
     if (!result.canceled) {
-
-      console.log(result.assets[0].uri)
-      setImage(result.assets[0].uri)
-
-     /*  // Use spread operator to preserve previous images
-      setImage((prevImages) => [
-        ...prevImages,
-        ...result.assets.map((asset) => asset.uri),
-      ]); */
+      setImage(result.assets[0].uri);
+      setIsButtonDisabled(true);
     }
+  };
+
+  const handleDeleteImage = () => {
+    setImage(null);
+    setIsButtonDisabled(false);
   };
 
   // envio de datos
 
   const sendProfile = async () => {
-      
     try {
-      console.log("Marca:", marca);
-      console.log("Modelo:", modelo);
-      console.log("Año:", selectedValue);
-      console.log(image);
-
+    
       const { error } = await supabase.from("perfiles").insert([
         {
-         
           marca: marca,
           modelo: modelo,
           año: selectedValue,
@@ -119,12 +110,10 @@ export default function Garage({ status, onclose }) {
       // Aquí puedes manejar el error de la manera que prefieras, por ejemplo, mostrando un mensaje al usuario.
     }
 
-
-
-    setMarca()
-    setModelo()
-    setImage()
-    close()
+    setMarca();
+    setModelo();
+    setImage();
+    close();
   };
 
   // datos ejemplo:
@@ -136,14 +125,15 @@ export default function Garage({ status, onclose }) {
           marginTop: 80,
           width: "$full",
           paddingHorizontal: 30,
-          
         }}
       ></Box>
 
       <Modal isOpen={status} onClose={onclose}>
         <ModalBackdrop />
-        <ModalContent sx={{backgroundColor: "rgba(25, 25, 25, 1)", paddingVertical: 20}}>
-          <ModalHeader sx={{ marginVertical:4}}>
+        <ModalContent
+          sx={{ backgroundColor: "rgba(25, 25, 25, 1)", paddingVertical: 20 }}
+        >
+          <ModalHeader sx={{ marginVertical: 4 }}>
             <Text
               style={{
                 fontFamily: "MontserratSemibold",
@@ -230,14 +220,40 @@ export default function Garage({ status, onclose }) {
               <Button
                 sx={{ marginHorizontal: 20 }}
                 variant="outline"
-                action="secondary"
+                action={isButtonDisabled ? "secondary" : "primary"}
                 onPress={pickImage}
+                disabled={isButtonDisabled}
               >
                 <ButtonText>Añadir imagen</ButtonText>
               </Button>
 
+              {image && (
+                <Box
+                  sx={{
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    
+                    borderColor: "red"
+                  }}
+                >
+                  <Image
+                    source={{ uri: image }}
+                    style={{ width: 70, height: 70 }}
+                  />
+
+                  <Icon
+                    sx={{posicion: "relative", top: -90, left: 30}}
+                    onPress={handleDeleteImage}
+                    as={TrashIcon}
+                    w="$6"
+                    h="$6"
+                    color="$red500"
+                  />
+                </Box>
+              )}
+
               <Button
-                sx={{ marginTop: 50 }}
                 size="md"
                 variant="outline"
                 onPress={sendProfile}

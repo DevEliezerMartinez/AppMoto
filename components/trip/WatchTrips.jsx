@@ -16,19 +16,23 @@ import {
   Textarea,
   TextareaInput,
   Center,
+  Icon,
 } from "@gluestack-ui/themed";
 import { StyleSheet, Image } from "react-native";
 import { FabLabel } from "@gluestack-ui/themed";
 import { AddIcon } from "@gluestack-ui/themed";
 import { ModalContent } from "@gluestack-ui/themed";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { ModalHeader } from "@gluestack-ui/themed";
 import { ButtonText } from "@gluestack-ui/themed";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
+import { TrashIcon } from "@gluestack-ui/themed";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 
 const WatchTrips = () => {
-  const IDglobal = useSelector((state) => state.IDlist.counter);
+  const miObjeto = useSelector((state) => state.infoProfile.miObjeto);
+
   const [resultados, setResultados] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState();
@@ -36,12 +40,6 @@ const WatchTrips = () => {
   const [refreshData, setRefreshData] = useState(false);
 
   //modal
-  const [showDateText, setShowDateText] = useState(false);
-  const [showButtonDate, setButtonDate] = useState(true);
-
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
 
   const [destine, setDestine] = useState("");
   const [km, setKm] = useState("");
@@ -49,65 +47,57 @@ const WatchTrips = () => {
   const [notes, setNotes] = useState("");
 
   // boton de imagen
-  const [showBtnImage, setshowBtnImage] = useState(true);
-  const [showTitleImage, setshowTitleImage] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const [image, setImage] = useState("");
+
+  const handleDeleteImage = () => {
+    setImage(null);
+    setIsButtonDisabled(false);
+  };
+
+  // states de fecha
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    console.log("A date has been picked: ", date);
+    setSelectedDate(date);
+    hideDatePicker();
+  };
 
   //end modal
 
   const onSubmit = async () => {
     setShowModal(false);
-
-    const formData = {
-      destine,
-      km,
-      dateTrip,
-      notes,
-      image,
-    };
-
-    let some = JSON.stringify(formData.dateTrip);
-    let dateParsed = some.slice(1, 11);
-
+    
+    console.log("fecha enviada: ", selectedDate)
     const { error } = await supabase.from("viajes").insert({
       fotografia: image,
       destino: destine,
       km_viaje: km,
-      fecha: dateParsed,
+      fecha: selectedDate,
       notas: notes,
+      id_perfil: miObjeto.ID,
     });
 
     if (error) {
-      console.log("true");
-      console.log(error);
+      console.log("upsss!",error);
     }
     setRefreshData(true);
   };
 
-  const handleDate = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDateTrip(currentDate);
-    setShow(false);
-    setDate(currentDate);
-    setShowDateText(true);
-    setButtonDate(false);
-  };
-
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    console.log("funcion");
-    setshowBtnImage(false);
-    setshowTitleImage(true);
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -115,13 +105,9 @@ const WatchTrips = () => {
       quality: 1,
     });
 
-    /* console.log("---",result.assets);
-     */
-
     if (!result.canceled) {
-      console.log("resultado", result.assets[0].uri);
-
       setImage(result.assets[0].uri);
+      setIsButtonDisabled(true);
     }
   };
 
@@ -130,23 +116,16 @@ const WatchTrips = () => {
       try {
         const { data, error, status } = await supabase
           .from("viajes")
-          .select(`id_viaje, fecha, destino, fotografia, km_viaje`)
-          .eq('id_perfil', IDglobal)
+          .select(`id_viaje, fotografia, destino, km_viaje, fecha, notas`)
+          .eq("id_perfil", miObjeto.ID);
 
         if (error) {
           console.log("Error al obtener datos:", error);
         } else {
-          const formattedData = data.map((item) => ({
-            ...item,
-            fecha: formatFecha(item.fecha),
-          }));
+          setResultados(data);
 
-          setResultados(formattedData);
-          console.log("---------");
-          console.log(formattedData);
-          console.log("---------");
           // Calcular la sumatoria de km_viaje
-          const total = formattedData.reduce(
+          const total = data.reduce(
             (accumulatedTotal, currentItem) =>
               accumulatedTotal + parseFloat(currentItem.km_viaje),
             0
@@ -162,22 +141,10 @@ const WatchTrips = () => {
     };
 
     getTrips();
-  }, [refreshData]);
-
-  const formatFecha = (fecha) => {
-    const options = { day: "numeric", month: "long", year: "numeric" };
-    const date = new Date(fecha);
-    return date.toLocaleDateString("es-ES", options);
-  };
+  }, [refreshData, miObjeto.ID]);
 
   const openModalForm = () => {
     // Restablecer estados relacionados con la imagen y la fecha al abrir el modal
-    setshowBtnImage(true);
-    setshowTitleImage(false);
-    setShow(false);
-    setButtonDate(true);
-    setDate(new Date());
-    setShowDateText(false);
 
     showModal == true ? setShowModal(false) : setShowModal(true);
   };
@@ -218,6 +185,10 @@ const WatchTrips = () => {
                 <Text style={commonStyles.fontStyle1}>{item.fecha}</Text>
                 <Text style={commonStyles.fontStyle2}>{item.destino}</Text>
               </Box>
+
+              <Text style={{ padding: 10, fontFamily: "MontserratRegular" }}>
+                {item.notas}{" "}
+              </Text>
 
               <Box
                 sx={{
@@ -268,35 +239,45 @@ const WatchTrips = () => {
             <ModalBody>
               <Box
                 sx={{
-                  marginVertical: 30,
+                  marginVertical: 10,
                   display: "flex",
                   gap: 20,
                   alignItems: "center",
                 }}
               >
-                {showBtnImage && (
-                  <>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      action="secondary"
-                      onPress={pickImage}
-                    >
-                      <ButtonText>
-                        <Text style={commonStyles.fontStyle3}>
-                          Seleccione una imagen
-                        </Text>
-                      </ButtonText>
-                    </Button>
-                  </>
-                )}
+                <Button
+                  sx={{ margin: 1 }}
+                  variant="outline"
+                  action={isButtonDisabled ? "secondary" : "primary"}
+                  onPress={pickImage}
+                  disabled={isButtonDisabled}
+                >
+                  <ButtonText>Añadir imagen</ButtonText>
+                </Button>
 
-                {showTitleImage && (
-                  <>
-                    <Text style={commonStyles.fontStyle2}>
-                      Imagen seleccionada
-                    </Text>
-                  </>
+                {image && (
+                  <Box
+                    sx={{
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: -30,
+                    }}
+                  >
+                    <Image
+                      source={{ uri: image }}
+                      style={{ width: 70, height: 70 }}
+                    />
+
+                    <Icon
+                      sx={{ posicion: "relative", top: -90, left: 30 }}
+                      onPress={handleDeleteImage}
+                      as={TrashIcon}
+                      w="$6"
+                      h="$6"
+                      color="$red500"
+                    />
+                  </Box>
                 )}
 
                 <Input variant="underlined" size="md">
@@ -322,34 +303,18 @@ const WatchTrips = () => {
 
                 <Text style={commonStyles.fontStyle2}>Fecha</Text>
 
-                {show && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    onChange={handleDate}
-                    mode="date"
-                    display="calendar"
-                  />
+                <Button variant="outline" action="positive" onPress={showDatePicker} >
+                  <ButtonText>Seleccionar una fecha</ButtonText>
+                </Button>
+                {selectedDate && (
+                  <Text>{`Fecha seleccionada: ${selectedDate.toLocaleDateString()}`}</Text>
                 )}
-
-                {showButtonDate && (
-                  <Button
-                    size="md"
-                    variant="outline"
-                    action="primary"
-                    isDisabled={false}
-                    isFocusVisible={false}
-                    onPress={showDatepicker}
-                  >
-                    <ButtonText>Seleccionar fecha</ButtonText>
-                  </Button>
-                )}
-
-                {showDateText && (
-                  <Text id="fechaR" style={commonStyles.fontStyle3}>
-                    Fecha de viaje: {date.toLocaleString()}
-                  </Text>
-                )}
+                <DateTimePickerModal
+                  isVisible={isDatePickerVisible}
+                  mode="date"
+                  onConfirm={handleConfirm}
+                  onCancel={hideDatePicker}
+                />
 
                 <Text style={commonStyles.fontStyle2}>Notas del viaje</Text>
 

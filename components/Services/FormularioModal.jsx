@@ -31,6 +31,11 @@ import { useDispatch } from "react-redux";
 import { update } from "../../src/sliceServices"; // Ajusta la ruta a tu archivo miSlice
 
 export default function ModalForm({ status, onClose }) {
+
+  const miObjeto = useSelector((state) => state.infoProfile.miObjeto);
+
+  let id_perfil = miObjeto.ID;
+
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState();
 
@@ -91,8 +96,8 @@ export default function ModalForm({ status, onClose }) {
               </SelectPortal>
             </Select>
 
-            {selectedValue=="Agendar"?<SheduleService  onSubmit={handleSubmit} onClose={onClose}  />:  <></>}
-            {selectedValue=="Registrar"? <RegisterService onSubmit={handleSubmit} onClose={onClose} />: <></>}
+            {selectedValue=="Agendar"?<SheduleService IdInfo={id_perfil}  onSubmit={handleSubmit} onClose={onClose}  />:  <></>}
+            {selectedValue=="Registrar"? <RegisterService  IdInfo={id_perfil} onSubmit={handleSubmit} onClose={onClose} />: <></>}
 
           
           </ModalBody>

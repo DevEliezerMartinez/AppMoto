@@ -7,23 +7,18 @@ import Modal from "../../components/Profile/ModalProfile";
 import { supabase } from "../../lib/supabase";
 import ListProvider from "../../components/Profile/ListProfile";
 
-
 export default function Garage() {
   const [DataProfile, setDataProfile] = useState([]);
   //state para mostrar perfiles o vacio
-  const [mostrar, setmostrar] = useState(false);
 
   const [openModal, setOpenModal] = useState(false);
 
   const handleCloseModal = () => {
     setOpenModal(false);
     fetchProfiles(); // Call fetchProfiles when the modal is closed
-
-    /*   mostrar(); */
   };
   const handleOpenModal = () => {
     setOpenModal(true);
-    /*   mostrar(); */
   };
 
   const fetchProfiles = async () => {
@@ -35,8 +30,7 @@ export default function Garage() {
       // Verifica si perfiles no es null antes de actualizar el estado
       if (perfiles !== null) {
         setDataProfile(perfiles);
-        perfiles.map((item) => {
-        });
+        perfiles.map((item) => {});
       } else {
         console.error("La respuesta de Supabase fue nula.");
       }
@@ -59,14 +53,41 @@ export default function Garage() {
             textAlign: "center",
           }}
         >
-          Garage de motocicletaas
+          Garage de motocicletas
         </Text>
 
-        {mostrar ? (
-          <ContainerVacio />
-        ) : (
-          <ShowProfiles DataProfile={DataProfile} />
-        )}
+
+        <Box
+          sx={{
+            gap: 40,
+            marginHorizontal: 0,
+            marginTop: 80,
+            backgroundColor: "rgba(25, 25, 25, 1),",
+            paddingVertical: 30,
+            paddingHorizontal: 10,
+
+            borderRadius: 8,
+            width: "$full",
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "MontserratRegular",
+              textAlign: "center",
+              fontSize: 18,
+            }}
+          >
+            Motocicletas registradas
+          </Text>
+
+          <Divider sx={{ marginVertical: 0 }} />
+
+          <ScrollView sx={{ height: 320 }}>
+            {DataProfile.map((item: any) => (
+              <ListProvider key={item.modelo} data={item} />
+            ))}
+          </ScrollView>
+        </Box>
 
         <Pressable
           onPress={handleOpenModal}
@@ -95,100 +116,3 @@ export default function Garage() {
   );
 }
 
-const commonStyles = StyleSheet.create({
-  // Estilos de fuente numerados
-  container: {
-    flex: 1,
-    paddingTop: 25,
-    padding: 10,
-  },
-  input: {
-   
-    color: "white",
-    fontFamily: "MontserratRegular", // Reemplaza 'YourChosenFont' con el nombre de tu fuente
-  },
-
-  miniContainer: {
-    /* borderWidth: 1,
-    borderColor: "red", */
-    paddingHorizontal: 15,
-  },
-  fontStyle1: {
-    fontSize: 20,
-    fontFamily: "MontserratRegular",
-    textAlign: "center",
-  },
-  fontStyle2: {
-    fontSize: 20,
-    fontFamily: "MontserratSemibold",
-    textAlign: "center",
-  },
-  fontStyle3: {
-    fontSize: 16,
-    fontFamily: "MontserratThin",
-    textAlign: "center",
-  },
-  fontStyle4: {
-    fontSize: 14,
-    fontFamily: "MontserratSemibold",
-    textAlign: "center",
-  },
-});
-
-const ContainerVacio = () => (
-  <Box
-    sx={{
-      marginVertical: 0,
-      gap: 10,
-      alignItems: "center",
-    }}
-  >
-    <Image
-      style={{ width: 350, height: 200, marginTop: 100 }}
-      source={require(`../../assets/images/nuevoPer.jpg`)} // Intenta importar la imagen usando la ruta específica
-    />
-    <Text
-      style={{
-        fontFamily: "MontserratSemibold",
-        textAlign: "center",
-        marginTop: 20,
-      }}
-    >
-      Aqui podras ver tus motos, empieza por agregar una!
-    </Text>
-  </Box>
-);
-
-const ShowProfiles = ({ DataProfile }: { DataProfile: any }) => (
-  <Box
-    sx={{
-      gap: 40,
-      marginHorizontal: 0,
-      marginTop: 80,
-      backgroundColor: "rgba(25, 25, 25, 1),",
-      paddingVertical: 30,
-      paddingHorizontal: 10,
-
-      borderRadius: 8,
-      width: "$full",
-    }}
-  >
-    <Text
-      style={{
-        fontFamily: "MontserratRegular",
-        textAlign: "center",
-        fontSize: 18,
-      }}
-    >
-      Motocicletas registradas
-    </Text>
-
-    <Divider sx={{ marginVertical: 0 }} />
-
-    <ScrollView sx={{  height: 320,}}>
-      {DataProfile.map((item: any) => (
-        <ListProvider key={item.modelo} data={item} />
-      ))}
-    </ScrollView>
-  </Box>
-);

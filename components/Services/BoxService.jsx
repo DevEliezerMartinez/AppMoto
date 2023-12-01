@@ -19,7 +19,6 @@ const ComponentCard = ({ data, index }) => {
   let liston = data.piezas || [];
   liston = data.piezas ? data.piezas.split(",") : [];
 
-  /*  console.log(".-", liston); */
 
   const PressIn = () => {
     setShowModal(true);

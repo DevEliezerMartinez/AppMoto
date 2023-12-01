@@ -1,5 +1,4 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from 'react-redux';
 import { Text, View } from "../Themed";
 import {
   Avatar,
@@ -9,6 +8,7 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import { commonStyles } from "../../assets/commonStyles"; // Asegúrate de que la ruta sea correcta
+import { useSelector } from "react-redux";
 
 import { Link } from "expo-router";
 import { StyleSheet } from "react-native";
@@ -30,38 +30,33 @@ const styles = StyleSheet.create({
 
 const Header = () => {
   const counterValue = useSelector((state) => state.IDlist.counter);
+  const miObjeto = useSelector((state) => state.infoProfile.miObjeto);
+
   return (
-      <View style={styles.container}>
-        <HStack
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            padding: 20,
-          }}
-        >
-          <Text style={styles.title}>Mis viajes</Text>
-          <Text>{counterValue}</Text>
+    <View style={styles.container}>
+      <HStack
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          padding: 20,
+        }}
+      >
+        <Text style={styles.title}>Mis viajes</Text>
+        {/* Renderizar la imagen utilizando la información del estado global */}
+        {miObjeto && (
           <Avatar>
             <AvatarFallbackText>SS</AvatarFallbackText>
-            <AvatarImage
-             alt="icono"
-              source={{
-                uri: "https://images.pexels.com/photos/18971921/pexels-photo-18971921/free-photo-of-man-in-helmet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-              }}
-            />
+            <AvatarImage alt="icono" source={{ uri: miObjeto.ruta }} />
           </Avatar>
-        </HStack>
-        <VStack sx={{ padding: 20 }}>
-          <Text style={commonStyles.fontStyle4}>
-            Toda la informacion sobre tus viaje
-          </Text>
+        )}
+      </HStack>
+      <VStack sx={{ padding: 20 }}>
+        <Text style={commonStyles.fontStyle4}>
+          Toda la informacion sobre tus viaje
+        </Text>
+      </VStack>
+    </View>
+  );
+};
 
-          
-      
-
-        </VStack>
-      </View>
-  )
-}
-
-export default Header
+export default Header;

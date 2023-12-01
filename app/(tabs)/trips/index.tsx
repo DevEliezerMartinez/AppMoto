@@ -12,14 +12,10 @@ import {
 } from "@gluestack-ui/themed";
 import FirstTrip from "../../../components/trip/firstTrip";
 import WatchTrips from "../../../components/trip/WatchTrips";
-import { Link } from "expo-router";
 import Header from "../../../components/trip/Header";
-import { commonStyles } from "../../../assets/commonStyles"; // Asegúrate de que la ruta sea correcta
-import { useDispatch, useSelector } from "react-redux";
 export default function TabOneScreen() {
 
   
-  const miDato = useSelector((state: { miDato: number }) => state.miDato);
 
 
   return (
@@ -28,7 +24,7 @@ export default function TabOneScreen() {
         <Header />
 
         <Center sx={{ height: 580, width: 370 }}>
-          {miDato === 0 ? <FirstTrip /> : <WatchTrips />}
+           <WatchTrips />
 
         </Center>
       </View>

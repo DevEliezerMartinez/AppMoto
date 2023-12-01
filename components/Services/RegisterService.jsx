@@ -17,35 +17,27 @@ import {
   TextareaInput,
   VStack,
 } from "@gluestack-ui/themed";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { supabase } from "../../lib/supabase";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-export default function RegisterService({ onSubmit, onClose }) {
+export default function RegisterService({ onSubmit, onClose, IdInfo }) {
   // states for datepicker
-  const [date, setDate] = useState(new Date());
-  const [showButtonDate, setButtonDate] = useState(true);
-  const [mode, setMode] = useState("date");
-  const [showDateText, setShowDateText] = useState(false);
-  const [show, setShow] = useState(false);
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
   };
 
-  const showDatepicker = () => {
-    showMode("date");
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
   };
-  const handleDate = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    let adi = currentDate;
-    adi = JSON.stringify(adi);
-    adi = adi.slice(1, 11);
 
-    setShow(false);
-    setDate(adi);
-    setShowDateText(true);
-    setButtonDate(false);
+  const handleConfirm = (date) => {
+    console.log("A date has been picked: ", date);
+    setSelectedDate(date);
+    hideDatePicker();
   };
 
   //end dates
@@ -57,20 +49,21 @@ export default function RegisterService({ onSubmit, onClose }) {
   const [values, setValues] = useState([]);
 
   const handleSubmit = async () => {
-    
-
-    let Registrar = "Registrar"
+    let Registrar = "Registrar";
     try {
-      
-
       onSubmit();
       onClose();
 
-      const { error } = await supabase
-        .from("servicios")
-        .insert([
-          { fecha: date, status: Registrar, notas: detalles, piezas: values, costo:   Costo },
-        ])
+      const { error } = await supabase.from("servicios").insert([
+        {
+          fecha: selectedDate,
+          status: Registrar,
+          notas: detalles,
+          piezas: values,
+          costo: Costo,
+          id_perfil: IdInfo,
+        },
+      ]);
 
       if (error) {
         console.log("true");
@@ -80,10 +73,8 @@ export default function RegisterService({ onSubmit, onClose }) {
       console.error("Error general:", error.message);
     }
 
-
-    
-    onSubmit()
-    onClose()
+    onSubmit();
+    onClose();
   };
 
   return (
@@ -97,37 +88,18 @@ export default function RegisterService({ onSubmit, onClose }) {
           alignItems: "center",
         }}
       >
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            onChange={handleDate}
-            mode="date"
-            display="calendar"
-          />
+        <Button variant="outline" action="positive" onPress={showDatePicker}>
+          <ButtonText>Seleccionar una fecha</ButtonText>
+        </Button>
+        {selectedDate && (
+          <Text style={{color: "white"}}>{`Fecha seleccionada: ${selectedDate.toLocaleDateString()}`}</Text>
         )}
-
-        {showButtonDate && (
-          <Button
-            size="md"
-            variant="outline"
-            action="primary"
-            isDisabled={false}
-            isFocusVisible={false}
-            onPress={showDatepicker}
-          >
-            <ButtonText>Seleccionar fecha</ButtonText>
-          </Button>
-        )}
-
-        {showDateText && (
-          <Text
-            id="fechaR"
-            style={{ fontFamily: "MontserratRegular", color: "white" }}
-          >
-            Fecha: {date.toLocaleString()}
-          </Text>
-        )}
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="date"
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
+        />
       </Box>
 
       <Box id="checkboxes">
@@ -158,11 +130,12 @@ export default function RegisterService({ onSubmit, onClose }) {
             }}
           >
             <Checkbox value="Aceite" aria-label="Seleccionar aceite">
-              <CheckboxIndicator aria-label="aria"
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -184,12 +157,13 @@ export default function RegisterService({ onSubmit, onClose }) {
               </CheckboxIndicator>
             </Checkbox>
 
-            <Checkbox value="Bujias"  aria-label="Seleccionar Bujias">
-              <CheckboxIndicator aria-label="aria"
+            <Checkbox value="Bujias" aria-label="Seleccionar Bujias">
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -211,12 +185,16 @@ export default function RegisterService({ onSubmit, onClose }) {
               </CheckboxIndicator>
             </Checkbox>
 
-            <Checkbox value="Revisión de cadena"  aria-label="Seleccionar cadena">
-              <CheckboxIndicator aria-label="aria"
+            <Checkbox
+              value="Revisión de cadena"
+              aria-label="Seleccionar cadena"
+            >
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -238,12 +216,16 @@ export default function RegisterService({ onSubmit, onClose }) {
               </CheckboxIndicator>
             </Checkbox>
 
-            <Checkbox value="Anticogelante"  aria-label="Seleccionar Anticogelante">
-              <CheckboxIndicator aria-label="aria"
+            <Checkbox
+              value="Anticogelante"
+              aria-label="Seleccionar Anticogelante"
+            >
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -265,12 +247,13 @@ export default function RegisterService({ onSubmit, onClose }) {
               </CheckboxIndicator>
             </Checkbox>
 
-            <Checkbox value="Filtro de Aire"  aria-label="Seleccionar Aire">
-              <CheckboxIndicator aria-label="aria"
+            <Checkbox value="Filtro de Aire" aria-label="Seleccionar Aire">
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -301,7 +284,6 @@ export default function RegisterService({ onSubmit, onClose }) {
             color: "white",
             fontSize: 18,
             padding: 10,
-          
           }}
         >
           Extras
@@ -323,11 +305,12 @@ export default function RegisterService({ onSubmit, onClose }) {
             }}
           >
             <Checkbox value="Luces" aria-label="Seleccionar luces">
-              <CheckboxIndicator aria-label="aria"
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -350,11 +333,12 @@ export default function RegisterService({ onSubmit, onClose }) {
             </Checkbox>
 
             <Checkbox value="Frenos" aria-label="Seleccionar frenos">
-              <CheckboxIndicator aria-label="aria"
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -376,12 +360,16 @@ export default function RegisterService({ onSubmit, onClose }) {
               </CheckboxIndicator>
             </Checkbox>
 
-            <Checkbox value="Revisión de bateria" aria-label="Seleccionar bateria">
-              <CheckboxIndicator aria-label="aria"
+            <Checkbox
+              value="Revisión de bateria"
+              aria-label="Seleccionar bateria"
+            >
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -404,11 +392,12 @@ export default function RegisterService({ onSubmit, onClose }) {
             </Checkbox>
 
             <Checkbox value="Llantas" aria-label="Seleccionar llantas">
-              <CheckboxIndicator aria-label="aria"
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -431,11 +420,12 @@ export default function RegisterService({ onSubmit, onClose }) {
             </Checkbox>
 
             <Checkbox value="Claxon" aria-label="Seleccionar claxon">
-              <CheckboxIndicator aria-label="aria"
+              <CheckboxIndicator
+                aria-label="aria"
                 sx={{
                   width: 100,
-                  height: 35,
-                  backgroundColor: "#0E8AE5",
+                  height: 37,
+                  backgroundColor: "transparent",
                   borderRadius: 16,
                   display: "flex",
                   justifyContent: "center",
@@ -451,7 +441,7 @@ export default function RegisterService({ onSubmit, onClose }) {
                       textAlign: "center",
                     }}
                   >
-                    Claxon 
+                    Claxon
                   </Text>
                 </CheckboxLabel>
               </CheckboxIndicator>
@@ -460,7 +450,14 @@ export default function RegisterService({ onSubmit, onClose }) {
         </ScrollView>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 30, paddingHorizontal: 10 , marginVertical:20}}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 30,
+          paddingHorizontal: 10,
+          marginVertical: 20,
+        }}
+      >
         <Input variant="underlined" size="md">
           <InputField
             sx={{ color: "white" }}
@@ -495,38 +492,3 @@ export default function RegisterService({ onSubmit, onClose }) {
     </View>
   );
 }
-
-const commonStyles = StyleSheet.create({
-  // Estilos de fuente numerados
-  container: {
-    flex: 1,
-    paddingTop: 25,
-    padding: 10,
-  },
-
-  miniContainer: {
-    /* borderWidth: 1,
-    borderColor: "red", */
-    paddingHorizontal: 15,
-  },
-  fontStyle1: {
-    fontSize: 20,
-    fontFamily: "MontserratRegular",
-    textAlign: "center",
-  },
-  fontStyle2: {
-    fontSize: 20,
-    fontFamily: "MontserratSemibold",
-    textAlign: "center",
-  },
-  fontStyle3: {
-    fontSize: 16,
-    fontFamily: "MontserratThin",
-    textAlign: "center",
-  },
-  fontStyle4: {
-    fontSize: 14,
-    fontFamily: "MontserratSemibold",
-    textAlign: "center",
-  },
-});

@@ -5,6 +5,7 @@ import listServices from './sliceServices';
 import IDlist from './sliceID';
 import routeMatch from './sliceTrips';
 import routeTrip from './sliceRoutes';
+import infoProfile from './sliceInfoProfile';
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     IDlist: IDlist,
     routeMatch: routeMatch,
     routeTrip: routeTrip,
+    infoProfile: infoProfile,
   },
 });
 
