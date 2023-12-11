@@ -11,7 +11,7 @@ import { commonStyles } from "../../assets/commonStyles"; // Asegúrate de que l
 import { useSelector } from "react-redux";
 
 import { Link } from "expo-router";
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -34,22 +34,12 @@ const Header = () => {
 
   return (
     <View style={styles.container}>
-      <HStack
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          padding: 20,
-          gap:30
-        }}
-      >
-        <Text style={styles.title}>Mis motos</Text>
-        {miObjeto && (
-          <Avatar>
-            <AvatarFallbackText>SS</AvatarFallbackText>
-            <AvatarImage alt="icono" source={{ uri: miObjeto.ruta }} />
-          </Avatar>
-        )}
-      </HStack>
+     
+     <Link href="/modal" asChild>
+              <Pressable>
+                <Text>info</Text>
+              </Pressable>
+            </Link>
       
     </View>
   );

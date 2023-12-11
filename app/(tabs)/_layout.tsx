@@ -1,7 +1,9 @@
-import { Tabs } from "expo-router";
+import { Link, Tabs } from "expo-router";
 import { Image } from "react-native";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Pressable } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function TabLayout() {
   const routeMatch = useSelector(
@@ -38,6 +40,7 @@ export default function TabLayout() {
       black: "#404040",
     },
   };
+
   return (
     <Tabs
       screenOptions={{
@@ -49,6 +52,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="Garage"
+        
         options={{
           title: "Garage",
           headerShown: false,

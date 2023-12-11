@@ -65,13 +65,13 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-
   return (
     <ThemeProvider value={DarkTheme}>
       <GluestackUIProvider config={config}>
         <Provider store={store}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           </Stack>
         </Provider>
       </GluestackUIProvider>

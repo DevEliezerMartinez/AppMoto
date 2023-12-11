@@ -8,26 +8,22 @@ import {
   Center,
   HStack,
   Heading,
+  ScrollView,
   VStack,
 } from "@gluestack-ui/themed";
 import FirstTrip from "../../../components/trip/firstTrip";
 import WatchTrips from "../../../components/trip/WatchTrips";
 import Header from "../../../components/trip/Header";
 export default function TabOneScreen() {
-
-  
-
-
   return (
-   
-      <View style={{ flex: 1, alignItems: "center", paddingTop: 30 }}>
+    <ScrollView>
+      <View style={{ flex: 1, alignItems: "center", paddingTop: 30, marginBottom:-0 }}>
         <Header />
 
         <Center sx={{ height: 580, width: 370 }}>
-           <WatchTrips />
-
+          <WatchTrips />
         </Center>
       </View>
-   
+    </ScrollView>
   );
 }

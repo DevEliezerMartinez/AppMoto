@@ -6,12 +6,15 @@ import {
   Button,
   ButtonText,
   Center,
+  ChevronDownIcon,
   Divider,
   HStack,
+  Icon,
   ScrollView,
   Select,
   SelectBackdrop,
   SelectContent,
+  SelectIcon,
   SelectInput,
   SelectItem,
   SelectPortal,
@@ -44,14 +47,11 @@ export default function TabTwoScreen() {
       filterStatus = "Registrar";
     }
 
-
     let { data: servicios, error } = await supabase
       .from("servicios")
       .select("costo,fecha,notas,piezas,status,id_servicio")
       .eq("id_perfil", miObjeto.ID)
       .eq("status", filterStatus);
-    ;
-
     setdbDatos(servicios);
   };
 
@@ -73,98 +73,103 @@ export default function TabTwoScreen() {
   };
 
   return (
-    <View style={commonStyles.container}>
-      <Header />
+    <ScrollView>
+      <View style={commonStyles.container}>
+        <Header />
 
-      <View style={commonStyles.miniContainer}>
-        <Center>
-          <Image
-            alt="imagen-destino"
-            source={{ uri: miObjeto.ruta }}
-            style={{
-              height: 200,
-              width: 300,
-              resizeMode: "cover",
-              borderRadius: 3,
+        <View style={commonStyles.miniContainer}>
+          <Center>
+            <Image
+              alt="imagen-destino"
+              source={{ uri: miObjeto.ruta }}
+              style={{
+                height: 200,
+                width: 300,
+                resizeMode: "cover",
+                borderRadius: 3,
+              }}
+            />
+          </Center>
+
+          <Center sx={{ marginVertical: 10 }}>
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: "MontserratSemibold",
+                textAlign: "center",
+              }}
+            >
+              {miObjeto.marca} {miObjeto.modelo} {miObjeto.año}
+            </Text>
+          </Center>
+
+          <Divider
+            sx={{
+              bg: "#6E6E6E",
+              marginVertical: 4,
             }}
           />
-        </Center>
 
-        <Center sx={{ marginVertical: 10 }}>
           <Text
             style={{
-              fontSize: 20,
-              fontFamily: "MontserratSemibold",
+              fontSize: 16,
+              fontFamily: "MontserratRegular",
               textAlign: "center",
             }}
           >
-            {miObjeto.marca} {miObjeto.modelo} {miObjeto.año}
+            Historial de servicios
           </Text>
-        </Center>
 
-        <Divider
-          sx={{
-            bg: "#6E6E6E",
-            marginVertical: 4,
-          }}
-        />
+          <Select onValueChange={handleSelectChange}>
+            <SelectTrigger variant="underlined" size="md">
+              <SelectInput
+                sx={{
+                  color: "white",
+                  fontFamily: "MontserratRegular", // Reemplaza 'YourChosenFont' con el nombre de tu fuente
+                }}
+                placeholder="Selecciona una opcion"
+              />
+               <SelectIcon mr="$3">
+                  <Icon as={ChevronDownIcon} />
+                </SelectIcon>
+            </SelectTrigger>
+            <SelectPortal>
+              <SelectBackdrop />
+              <SelectContent>
+                <SelectItem label="Servicios agendados" value="1" />
+                <SelectItem label="Servicios Registrados" value="2" />
+              </SelectContent>
+            </SelectPortal>
+          </Select>
 
-        <Text
-          style={{
-            fontSize: 16,
-            fontFamily: "MontserratRegular",
-            textAlign: "center",
-          }}
-        >
-          Historial de servicios
-        </Text>
+          <ContainerScroll info={dbDatos} />
 
-        <Select onValueChange={handleSelectChange}>
-          <SelectTrigger variant="underlined" size="md">
-            <SelectInput
-              sx={{
-                color: "white",
-                fontFamily: "MontserratRegular", // Reemplaza 'YourChosenFont' con el nombre de tu fuente
+          <Modal status={openModal} onClose={handleCloseModal} />
+
+          <Pressable
+            onPress={handleOpenModal}
+            style={{
+              padding: 8,
+              backgroundColor: "#066AFF",
+              borderRadius: 32,
+              marginTop: 1,
+              marginHorizontal: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: "MontserratSemibold",
+                textAlign: "center",
               }}
-              placeholder="Selecciona una opcion"
-            />
-          </SelectTrigger>
-          <SelectPortal>
-            <SelectBackdrop />
-            <SelectContent>
-              <SelectItem label="Servicios agendados" value="1" />
-              <SelectItem label="Servicios Registrados" value="2" />
-            </SelectContent>
-          </SelectPortal>
-        </Select>
-
-        <ContainerScroll info={dbDatos} />
-
-        <Modal status={openModal} onClose={handleCloseModal} />
-
-        <Pressable
-          onPress={handleOpenModal}
-          style={{
-            padding: 8,
-            backgroundColor: "#066AFF",
-            borderRadius: 32,
-            marginTop: 1,
-            marginHorizontal: 20,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 20,
-              fontFamily: "MontserratSemibold",
-              textAlign: "center",
-            }}
-            data
-          >
-            Agregar Servicio
-          </Text>
-        </Pressable>
+              data
+            >
+              Agregar Servicio
+            </Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
