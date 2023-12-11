@@ -47,8 +47,14 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
 
   const [values, setValues] = useState([]);
 
-  const handleSubmit = async () => {
-    let Registrar = "Registrar";
+  const validateAndSendService = async () => {
+    // Validar que todos los campos requeridos estén llenos
+    if (!selectedDate || !Costo) {
+      alert("La fecha y el costo son campos requeridos");
+      // Puedes mostrar un mensaje de error al usuario si prefieres
+      return;
+    }
+
     try {
       onSubmit();
       onClose();
@@ -56,7 +62,7 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
       const { error } = await supabase.from("servicios").insert([
         {
           fecha: selectedDate,
-          status: Registrar,
+          status: "Registrar",
           notas: detalles,
           piezas: values,
           costo: Costo,
@@ -74,6 +80,7 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
     onSubmit();
     onClose();
   };
+
 
   return (
     <View>
@@ -109,7 +116,7 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
             padding: 10,
           }}
         >
-          Basicos
+          Básicos
         </Text>
 
         <ScrollView
@@ -215,13 +222,13 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
             </Checkbox>
 
             <Checkbox
-              value="Anticogelante"
-              aria-label="Seleccionar Anticogelante"
+              value="Anticongelante"
+              aria-label="Seleccionar Anticongelante"
             >
               <CheckboxIndicator
                 aria-label="aria"
                 sx={{
-                  width: 100,
+                  width: 110,
                   height: 37,
                   backgroundColor: "transparent",
                   borderRadius: 16,
@@ -239,7 +246,7 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
                       textAlign: "center",
                     }}
                   >
-                    Anticogelante
+                    Anticongelante
                   </Text>
                 </CheckboxLabel>
               </CheckboxIndicator>
@@ -267,7 +274,7 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
                       textAlign: "center",
                     }}
                   >
-                    Filtro Aire
+                    Filtro de Aire
                   </Text>
                 </CheckboxLabel>
               </CheckboxIndicator>
@@ -302,6 +309,33 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
               setValues(keys);
             }}
           >
+            <Checkbox value="Carburador" aria-label="Seleccionar Carburador">
+              <CheckboxIndicator
+                aria-label="aria"
+                sx={{
+                  width: 100,
+                  height: 37,
+                  backgroundColor: "transparent",
+                  borderRadius: 16,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CheckboxLabel aria-label="aria">
+                  <Text
+                    style={{
+                      fontFamily: "MontserratSemibold",
+                      color: "white",
+                      fontSize: 12,
+                      textAlign: "center",
+                    }}
+                  >
+                    Carburador
+                  </Text>
+                </CheckboxLabel>
+              </CheckboxIndicator>
+            </Checkbox>
             <Checkbox value="Luces" aria-label="Seleccionar luces">
               <CheckboxIndicator
                 aria-label="aria"
@@ -439,7 +473,7 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
                       textAlign: "center",
                     }}
                   >
-                    Claxon
+                    Claxón
                   </Text>
                 </CheckboxLabel>
               </CheckboxIndicator>
@@ -477,7 +511,7 @@ export default function RegisterService({ onSubmit, onClose, IdInfo }) {
 
         <Button
           action="secondary"
-          onPress={handleSubmit}
+          onPress={validateAndSendService}
           sx={{
             marginTop: 10,
             marginHorizontal: 40,

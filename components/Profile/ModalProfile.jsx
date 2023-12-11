@@ -60,6 +60,7 @@ export default function Garage({ status, onclose }) {
   const close = () => {
     onclose();
   };
+  
 
   // imagen
   const [image, setImage] = useState(null);
@@ -86,9 +87,15 @@ export default function Garage({ status, onclose }) {
 
   // envio de datos
 
-  const sendProfile = async () => {
+  const validateAndSendProfile = async () => {
+    // Validar que todos los campos requeridos estén llenos
+    if (!marca || !modelo || !selectedValue || !image) {
+      alert("Todos los campos son requeridos");
+      // Puedes mostrar un mensaje de error al usuario si prefieres
+      return;
+    }
+  
     try {
-    
       const { error } = await supabase.from("perfiles").insert([
         {
           marca: marca,
@@ -97,26 +104,30 @@ export default function Garage({ status, onclose }) {
           imagen: image,
         },
       ]);
-
+  
       if (error) {
         throw new Error(
           `Error al insertar en la base de datos: ${error.message}`
         );
       }
-
+  
       // Aquí puedes realizar otras acciones con los valores, como enviarlos a través de una API
     } catch (error) {
       console.error("Ha ocurrido un error:", error);
       // Aquí puedes manejar el error de la manera que prefieras, por ejemplo, mostrando un mensaje al usuario.
     }
-
-    setMarca();
-    setModelo();
-    setImage();
+  
+    // Limpiar los estados después de enviar el perfil
+    setMarca("");
+    setModelo("");
+    setAno(0); // Si 'ano' también debe limpiarse
+    setSelectedValue(undefined);
+    setImage(null);
+    setIsButtonDisabled(false);
     close();
   };
+  
 
-  // datos ejemplo:
 
   return (
     <View style={{ flex: 1, alignItems: "center", paddingTop: 0 }}>
@@ -129,7 +140,7 @@ export default function Garage({ status, onclose }) {
       ></Box>
 
       <Modal isOpen={status} onClose={onclose}>
-        <ModalBackdrop />
+      <ModalBackdrop sx={{ backgroundColor: "black", opacity: 1 }} />
         <ModalContent
           sx={{ backgroundColor: "rgba(25, 25, 25, 1)", paddingVertical: 20 }}
         >
@@ -174,7 +185,7 @@ export default function Garage({ status, onclose }) {
                 <SelectTrigger variant="underlined" size="md">
                   <SelectInput
                     style={commonStyles.input}
-                    placeholder="Selecciona"
+                    placeholder="Selecciona el año"
                   />
                   <SelectIcon mr="$3">
                     <Icon as={ChevronDownIcon} />
@@ -202,6 +213,14 @@ export default function Garage({ status, onclose }) {
                     <SelectItem label="2021" value="2021" />
                     <SelectItem label="2022" value="2022" />
                     <SelectItem label="2023" value="2023" />
+                    <SelectItem label="2024" value="2024" />
+                    <SelectItem label="2018" value="2018" />
+                    <SelectItem label="2019" value="2019" />
+                    <SelectItem label="2020" value="2020" />
+                    <SelectItem label="2021" value="2021" />
+                    <SelectItem label="2022" value="2022" />
+                    <SelectItem label="2023" value="2023" />
+                    <SelectItem label="2024" value="2024" />
                   </SelectContent>
                 </SelectPortal>
               </Select>
@@ -255,8 +274,8 @@ export default function Garage({ status, onclose }) {
 
               <Button
                 size="md"
-                variant="outline"
-                onPress={sendProfile}
+                variant="primary"
+                onPress={validateAndSendProfile}
               >
                 <ButtonText>Guardar </ButtonText>
                 <ButtonIcon as={AddIcon} />

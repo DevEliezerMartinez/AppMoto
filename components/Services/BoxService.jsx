@@ -20,6 +20,7 @@ const ComponentCard = ({ data, index }) => {
   liston = data.piezas ? data.piezas.split(",") : [];
 
 
+
   const PressIn = () => {
     setShowModal(true);
   };

@@ -36,8 +36,14 @@ export default function SheduleService({ onSubmit, onClose, IdInfo }) {
   //state inputs
   const [detalles, setDetalles] = useState("");
 
-  const handleSubmit = async () => {
-    let agendar = "agendar";
+  const validateAndSendSchedule = async () => {
+    // Validar que la fecha sea requerida
+    if (!selectedDate) {
+      alert("La fecha es un campo requerido");
+      // Puedes mostrar un mensaje de error al usuario si prefieres
+      return;
+    }
+
     try {
       onSubmit();
       onClose();
@@ -45,7 +51,7 @@ export default function SheduleService({ onSubmit, onClose, IdInfo }) {
       const { error } = await supabase
         .from("servicios")
         .insert([
-          { fecha: selectedDate, status: agendar, notas: detalles, id_perfil: IdInfo },
+          { fecha: selectedDate, status: "agendar", notas: detalles, id_perfil: IdInfo },
         ]);
 
       if (error) {
@@ -91,7 +97,7 @@ export default function SheduleService({ onSubmit, onClose, IdInfo }) {
       </Textarea>
 
       <Button
-        onPress={handleSubmit}
+        onPress={validateAndSendSchedule}
         action="secondary"
         sx={{
           marginTop: 10,

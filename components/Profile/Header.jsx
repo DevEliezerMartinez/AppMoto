@@ -15,10 +15,10 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 2,
+    marginTop: 12,
   },
   title: {
-    fontSize: 36,
+    fontSize: 26,
     fontWeight: "bold",
   },
   separator: {
@@ -39,10 +39,10 @@ const Header = () => {
           flexDirection: "row",
           justifyContent: "space-between",
           padding: 20,
+          gap:30
         }}
       >
-        <Text style={styles.title}>Mis viajes</Text>
-        {/* Renderizar la imagen utilizando la información del estado global */}
+        <Text style={styles.title}>Mis motos</Text>
         {miObjeto && (
           <Avatar>
             <AvatarFallbackText>SS</AvatarFallbackText>
@@ -50,11 +50,7 @@ const Header = () => {
           </Avatar>
         )}
       </HStack>
-      <VStack sx={{ padding: 20 }}>
-        <Text style={commonStyles.fontStyle4}>
-          Toda la informacion sobre tus viajes
-        </Text>
-      </VStack>
+      
     </View>
   );
 };

@@ -117,7 +117,9 @@ const WatchTrips = () => {
         const { data, error, status } = await supabase
           .from("viajes")
           .select(`id_viaje, fotografia, destino, km_viaje, fecha, notas`)
-          .eq("id_perfil", miObjeto.ID);
+          .eq("id_perfil", miObjeto.ID)
+          .order("fecha", { ascending: false }); // Ordenar por fecha de forma descendente
+
 
         if (error) {
           console.log("Error al obtener datos:", error);

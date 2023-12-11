@@ -160,7 +160,7 @@ export default function TabTwoScreen() {
             }}
             data
           >
-            Agendar Servicio
+            Agregar Servicio
           </Text>
         </Pressable>
       </View>
@@ -180,7 +180,7 @@ const commonStyles = StyleSheet.create({
   // Estilos de fuente numerados
   container: {
     flex: 1,
-    paddingTop: 10,
+    paddingTop: 18,
     padding: 10,
   },
 

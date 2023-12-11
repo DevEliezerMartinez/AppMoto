@@ -45,6 +45,8 @@ export default function Garage() {
 
   return (
     <View style={{ flex: 1, alignItems: "center", paddingTop: 0 }}>
+
+      
       <Box sx={{ marginTop: 80, width: "$full", paddingHorizontal: 30 }}>
         <Text
           style={{
