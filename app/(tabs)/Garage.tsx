@@ -49,7 +49,7 @@ export default function Garage() {
       <View style={{ flex: 1, alignItems: "center", paddingTop: 0 }}>
         
         <Box sx={{ marginTop: 80, width: "$full", paddingHorizontal: 30 }}>
-        <Icon sx={{color:"white", marginLeft:10}} as={InfoIcon} w="$5" h="$5" />
+        <Icon cls sx={{color:"white", marginLeft:10}} as={InfoIcon} w="$5" h="$5" />
           <Text
             style={{
               fontFamily: "MontserratSemibold",
